@@ -5,14 +5,13 @@ using xTile;
 using xTile.Tiles;
 using xTile.Layers;
 using xTile.Dimensions;
-using xTile.ObjectModel;
 using GenericModConfigMenu;
-using StardewValley.Locations;
+using StardewValley.Menus;
 
 namespace CustomLocksUpdated {
     internal class ModEntry : Mod {
 
-        ModConfig config;
+        ModConfig config = new();
         Dictionary<string, int[]> characterDict = new Dictionary<string, int[]>();
 
         public override void Entry(IModHelper helper) {
@@ -43,6 +42,9 @@ namespace CustomLocksUpdated {
             if (locationName == "Desert") {
                 OnTimeChangedDesert(map);
             }
+            if (Game1.activeClickableMenu is BobberBar bar) {
+                int newFishID = Helper.Reflection.GetField<int>(bar, "whichFish").GetValue();
+            }
         }
 
         void OnTimeChangedForest(Map map) {
@@ -70,14 +72,16 @@ namespace CustomLocksUpdated {
             }
 
             for (int i = 0; i < tiles.Length; i++) {
+                if (tiles[i] == null) continue;
                 tiles[i].Properties["Action"] = actionProperties[i];
             }
         }
 
         void OnTimeChangedMountain(Map map) {
+            if (map == null) return;
             string[] actionProperties = new string[3];
             Tile[] tiles = new Tile[3];
-
+            
             tiles[0] = GetTile(map, "Buildings", 12, 25);
             tiles[1] = GetTile(map, "Buildings", 8, 20);
             tiles[2] = GetTile(map, "Buildings", 76, 8);
@@ -99,6 +103,7 @@ namespace CustomLocksUpdated {
             }
 
             for (int i = 0; i < tiles.Length; i++) {
+                if (tiles[i] == null) continue;
                 tiles[i].Properties["Action"] = actionProperties[i];
             }
 
@@ -138,6 +143,7 @@ namespace CustomLocksUpdated {
             }
 
             for (int i = 0; i < tiles.Length; i++) {
+                if (tiles[i] == null) continue;
                 tiles[i].Properties["Action"] = actionProperties[i];
             }
         }
@@ -194,6 +200,7 @@ namespace CustomLocksUpdated {
             }
 
             for (int i = 0; i < tiles.Length; i++) {
+                if (tiles[i] == null) continue;
                 tiles[i].Properties["Action"] = actionProperties[i];
             }
         }
@@ -208,6 +215,7 @@ namespace CustomLocksUpdated {
                 actionProperty = "LockedDoorWarp 4 9 SandyHouse 900 2350";
             }
 
+            if (tile == null) return;
             tile.Properties["Action"] = actionProperty;
         }
 
@@ -215,59 +223,61 @@ namespace CustomLocksUpdated {
             string name = e.NewLocation.Name;
             Map map = e.NewLocation.Map;
 
-            if (name == "Forest") {
-                OnTimeChangedForest(map);
-            }
-            if (name == "Beach") {
-                OnTimeChangedBeach(map);
-            }
-            if (name == "Mountain") {
-                OnTimeChangedMountain(map);
-            }
-            if (name == "Town") {
-                OnTimeChangedTown(map);
-            }
-            if (name == "Desert") {
-                OnTimeChangedDesert(map);
-            }
-            if (name == "AnimalShop") {
-                OnWarpInterior(name, "Jas", "Marnie", "Shane");
-            }
-            if (name == "ScienceHouse") {
-                OnWarpInterior(name, "Maru", "Robin", "Demetrius", true);
-            }
-            if (name == "SebastianRoom") {
-                OnWarpInterior(name, "Sebastian");
-            }
-            if (name == "Hospital") {
-                OnWarpHospital(name);
-            }
-            if (name == "SeedShop") {
-                OnWarpInterior(name, "Abigail", "Pierre", "Caroline", true);
-            }
-            if (name == "JoshHouse") {
-                OnWarpInterior(name, "Alex", "Evelyn", "George", true);
-            }
-            if (name == "Saloon") {
-                OnWarpInterior(name, "Gus");
-            }
-            if (name == "Trailer") {
-                OnWarpInterior(name, "Penny");
-            }
-            if (name == "Trailer_big") {
-                OnWarpInterior(name, "PennyBig", "Pam");
-            }
-            if (name == "ManorHouse") {
-                OnWarpInterior(name, "Lewis");
-            }
-            if (name == "SamHouse") {
-                OnWarpInterior(name, "Sam", "Vincent", "Jodi", "Kent");
-            }
-            if (name == "HaleyHouse") {
-                OnWarpInterior(name, "Haley", "Emily");
-            }
-            if (name == "Blacksmith") {
-                OnWarpInterior(name, "Clint");
+            if (e.NewLocation.IsActiveLocation()) {
+                if (name == "Forest") {
+                    OnTimeChangedForest(map);
+                }
+                if (name == "Beach") {
+                    OnTimeChangedBeach(map);
+                }
+                if (name == "Mountain") {
+                    OnTimeChangedMountain(map);
+                }
+                if (name == "Town") {
+                    OnTimeChangedTown(map);
+                }
+                if (name == "Desert") {
+                    OnTimeChangedDesert(map);
+                }
+                if (name == "AnimalShop") {
+                    OnWarpInterior(name, "Jas", "Marnie", "Shane");
+                }
+                if (name == "ScienceHouse") {
+                    OnWarpInterior(name, "Maru", "Robin", "Demetrius", true);
+                }
+                if (name == "SebastianRoom") {
+                    OnWarpInterior(name, "Sebastian");
+                }
+                if (name == "Hospital") {
+                    OnWarpHospital(name);
+                }
+                if (name == "SeedShop") {
+                    OnWarpInterior(name, "Abigail", "Pierre", "Caroline", true);
+                }
+                if (name == "JoshHouse") {
+                    OnWarpInterior(name, "Alex", "Evelyn", "George", true);
+                }
+                if (name == "Saloon") {
+                    OnWarpInterior(name, "Gus");
+                }
+                if (name == "Trailer") {
+                    OnWarpInterior(name, "Penny");
+                }
+                if (name == "Trailer_big") {
+                    OnWarpInterior(name, "PennyBig", "Pam");
+                }
+                if (name == "ManorHouse") {
+                    OnWarpInterior(name, "Lewis");
+                }
+                if (name == "SamHouse") {
+                    OnWarpInterior(name, "Sam", "Vincent", "Jodi", "Kent");
+                }
+                if (name == "HaleyHouse") {
+                    OnWarpInterior(name, "Haley", "Emily");
+                }
+                if (name == "Blacksmith") {
+                    OnWarpInterior(name, "Clint");
+                }
             }
         }
 
