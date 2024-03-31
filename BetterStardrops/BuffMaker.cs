@@ -44,7 +44,21 @@ namespace BetterStardrops {
                 description: "Additional immunity from consuming stardrops",
                 duration: Buff.ENDLESS,
                 effects: new BuffEffects() {
-                    Immunity = { amount }
+                    Immunity = { amount },
+                }
+            );
+
+            return newBuff;
+        }
+
+        internal Buff CreateStaminaBuff(int amount) {
+            Buff newBuff = new Buff(
+                id: "{{ModId}}_StardropStaminaBuff",
+                displayName: "Stardrop Stamina Power",
+                description: "Additional stamina from consuming stardrops",
+                duration: Buff.ENDLESS,
+                effects: new BuffEffects() {
+                    MaxStamina = { amount }
                 }
             );
 

@@ -17,6 +17,9 @@ namespace BetterStardrops {
         int healthIncreaseAmount = new();
         int newHealthIncreaseAmount = new();
 
+        int staminaIncreaseAmount = new();
+        int newStaminaIncreaseAmount = new();
+
         int combatLevelIncreaseAmount = new();
         int newCombatLevelIncreaseAmount = new();
 
@@ -108,6 +111,12 @@ namespace BetterStardrops {
                     Game1.player.health = Game1.player.maxHealth;
                     if (config.ShowLogging) Monitor.Log($"Health buff: +{newHealthIncreaseAmount}", LogLevel.Info);
                 }
+                if (config.EnableStamina) {
+                    newStaminaIncreaseAmount = staminaIncreaseAmount * stardropsFound;
+                    Buff buff = buffMaker.CreateStaminaBuff(newStaminaIncreaseAmount);
+                    buffsToApply.Add(buff);
+                    if (config.ShowLogging) Monitor.Log($"Stamina buff: +{newStaminaIncreaseAmount}", LogLevel.Info);
+                }
                 if (config.EnableCombatLevel) {
                     newCombatLevelIncreaseAmount = combatLevelIncreaseAmount * stardropsFound;
                     Buff buff = buffMaker.CreateCombatLevelBuff(newCombatLevelIncreaseAmount);
@@ -163,6 +172,7 @@ namespace BetterStardrops {
             defenseIncreaseAmount = config.DefenseIncreaseAmount;
             immunityIncreaseAmount = config.ImmunityIncreaseAmount;
             healthIncreaseAmount = config.HealthIncreaseAmount;
+            staminaIncreaseAmount = config.StaminaIncreaseAmount;
             combatLevelIncreaseAmount = config.CombatLevelIncreaseAmount;
             farminglevelIncreaseAmount = config.FarmingLevelIncreaseAmount;
             fishingLevelIncreaseAmount = config.FishingLevelIncreaseAmount;
@@ -172,9 +182,9 @@ namespace BetterStardrops {
             magneticIncreaseAmount = config.MagneticIncreaseAmount;
         }
 
-        
 
-        
+
+
 
         void SetUpGMCM() {
             var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
@@ -263,6 +273,46 @@ namespace BetterStardrops {
                 setValue: value => config.HealthIncreaseAmount = value,
                 name: () => Helper.Translation.Get("buff-power.label"),
                 tooltip: () => Helper.Translation.Get("health-buff.tooltip"),
+                min: 0,
+                max: null
+            );
+
+            configMenu.AddSectionTitle(
+                mod: ModManifest,
+                text: () => Helper.Translation.Get("stamina-options.label")
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                getValue: () => config.EnableStamina,
+                setValue: value => config.EnableStamina = value,
+                name: () => Helper.Translation.Get("enabled.label")
+            );
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                getValue: () => config.StaminaIncreaseAmount,
+                setValue: value => config.StaminaIncreaseAmount = value,
+                name: () => Helper.Translation.Get("buff-power.label"),
+                tooltip: () => Helper.Translation.Get("stamina-buff.tooltip"),
+                min: 0,
+                max: null
+            );
+
+            configMenu.AddSectionTitle(
+                mod: ModManifest,
+                text: () => Helper.Translation.Get("magnetic-options.label")
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                getValue: () => config.EnableMagnetic,
+                setValue: value => config.EnableMagnetic = value,
+                name: () => Helper.Translation.Get("enabled.label")
+            );
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                getValue: () => config.MagneticIncreaseAmount,
+                setValue: value => config.MagneticIncreaseAmount = value,
+                name: () => Helper.Translation.Get("buff-power.label"),
+                tooltip: () => Helper.Translation.Get("magnetic-buff.tooltip"),
                 min: 0,
                 max: null
             );
@@ -383,26 +433,6 @@ namespace BetterStardrops {
                 setValue: value => config.MiningLevelIncreaseAmount = value,
                 name: () => Helper.Translation.Get("buff-power.label"),
                 tooltip: () => Helper.Translation.Get("mining-buff.tooltip"),
-                min: 0,
-                max: null
-            );
-
-            configMenu.AddSectionTitle(
-                mod: ModManifest,
-                text: () => Helper.Translation.Get("magnetic-options.label")
-            );
-            configMenu.AddBoolOption(
-                mod: ModManifest,
-                getValue: () => config.EnableMagnetic,
-                setValue: value => config.EnableMagnetic = value,
-                name: () => Helper.Translation.Get("enabled.label")
-            );
-            configMenu.AddNumberOption(
-                mod: ModManifest,
-                getValue: () => config.MagneticIncreaseAmount,
-                setValue: value => config.MagneticIncreaseAmount = value,
-                name: () => Helper.Translation.Get("buff-power.label"),
-                tooltip: () => Helper.Translation.Get("magnetic-buff.tooltip"),
                 min: 0,
                 max: null
             );

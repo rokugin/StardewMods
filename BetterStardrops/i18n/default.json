@@ -9,6 +9,8 @@
   "immunity-buff.tooltip": "Immunity granted per Stardrop. Default: 3",
   "health-options.label": "Health Buff",
   "health-buff.tooltip": "Max health granted per Stardrop. Default: 15",
+  "stamina-options.label": "Stamina Buff",
+  "stamina-buff.tooltip": "Max stamina granted per Stardrop. Default 6",
   "combat-options.label": "Combat Skill Level Buff",
   "combat-buff.tooltip": "Bonus combat skill levels granted per Stardrop. Default: 1",
   "farming-options.label": "Farming Skill Level Buff",

@@ -21,6 +21,9 @@ namespace BetterStardrops {
         public bool EnableHealth { get; set; } = true;
         public int HealthIncreaseAmount { get; set; } = 15;
 
+        public bool EnableStamina { get; set; } = true;
+        public int StaminaIncreaseAmount { get; set; } = 6;
+
         public bool EnableCombatLevel { get; set; } = false;
         public int CombatLevelIncreaseAmount { get; set; } = 1;
 
