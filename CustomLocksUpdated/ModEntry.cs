@@ -42,9 +42,6 @@ namespace CustomLocksUpdated {
             if (locationName == "Desert") {
                 OnTimeChangedDesert(map);
             }
-            if (Game1.activeClickableMenu is BobberBar bar) {
-                int newFishID = Helper.Reflection.GetField<int>(bar, "whichFish").GetValue();
-            }
         }
 
         void OnTimeChangedForest(Map map) {
@@ -253,6 +250,7 @@ namespace CustomLocksUpdated {
                 }
                 if (name == "SeedShop") {
                     OnWarpInterior(name, "Abigail", "Pierre", "Caroline", true);
+                    OnWarpSeedShop(name);
                 }
                 if (name == "JoshHouse") {
                     OnWarpInterior(name, "Alex", "Evelyn", "George", true);
@@ -279,6 +277,21 @@ namespace CustomLocksUpdated {
                     OnWarpInterior(name, "Clint");
                 }
             }
+        }
+
+        void OnWarpSeedShop(string name) {
+            GameLocation location = Game1.getLocationFromName(name);
+            string actionProperty;
+
+            if (Game1.player.getFriendshipHeartLevelForNPC("Caroline") >= 2 || config.StrangerRoomEntry) {
+                actionProperty = "Warp 5 13 Sunroom";
+                location.removeTileProperty(32, 3, "Buildings", "Action");
+            } else {
+                actionProperty = "Warp_Sunroom_Door";
+                location.removeTileProperty(32, 3, "Buildings", "Action");
+            }
+
+            location.setTileProperty(32, 3, "Buildings", "Action", actionProperty);
         }
 
         void OnWarpHospital(string name) {
