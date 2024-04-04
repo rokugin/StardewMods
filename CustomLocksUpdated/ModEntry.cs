@@ -6,7 +6,6 @@ using xTile.Tiles;
 using xTile.Layers;
 using xTile.Dimensions;
 using GenericModConfigMenu;
-using StardewValley.Menus;
 
 namespace CustomLocksUpdated {
     internal class ModEntry : Mod {
@@ -194,6 +193,11 @@ namespace CustomLocksUpdated {
                 actionProperties[11] = "LockedDoorWarp 5 19 Blacksmith 900 1600";
                 actionProperties[12] = "LockedDoorWarp 13 29 JojaMart 900 2300";
                 actionProperties[13] = "LockedDoorWarp 14 29 JojaMart 900 2300";
+            }
+
+            if (Game1.player.hasCompletedCommunityCenter()) {
+                tiles[12] = null;
+                tiles[13] = null;
             }
 
             for (int i = 0; i < tiles.Length; i++) {
@@ -881,12 +885,14 @@ namespace CustomLocksUpdated {
                 Map map = editor.Data;
 
                 Tile tile = GetTile(map, "Buildings", 95, 50); // Joja Mart left door
+                if (Game1.player.hasCompletedCommunityCenter()) tile = null;
                 if (tile == null) return;
 
                 // conditionals: ignore events, outside normal hours
                 tile.Properties["Action"] = "Warp 13 29 JojaMart";
 
                 tile = GetTile(map, "Buildings", 96, 50); // Joja Mart right door
+                if (Game1.player.hasCompletedCommunityCenter()) tile = null;
                 if (tile == null) return;
 
                 // conditionals: ignore events, outside normal hours
