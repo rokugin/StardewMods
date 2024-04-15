@@ -1,0 +1,10 @@
+{
+  "name": "Stronger Tools",
+  "author": "Rokugin",
+  "version": "1.0.0",
+  "description": "Increases the power of pickaxe and axe.",
+  "uniqueID": "Rokugin.StrongerTools",
+  "entryDLL": "StrongerTools.dll",
+  "minimumapiversion": "4.0.0",
+  "updatekeys": [  ]
+}
