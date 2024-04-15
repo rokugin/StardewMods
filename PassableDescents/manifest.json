@@ -6,5 +6,5 @@
   "uniqueID": "Rokugin.PassableDescents",
   "entryDLL": "PassableDescents.dll",
   "minimumapiversion": "4.0.0",
-  "updatekeys": []
+  "updatekeys": [ "Nexus:22592" ]
 }
