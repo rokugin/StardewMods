@@ -2,52 +2,83 @@
 using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValley.Extensions;
 using StardewValley.Locations;
+using xTile.Layers;
+using xTile.Tiles;
+using xTile.Dimensions;
 
 namespace PassableDescents {
     internal class ModEntry : Mod {
 
-        static IMonitor StaticMonitor;
-        static Vector2 tileVector2;
+        int delay = 0;
+        int delayMax = 10;
+        Layer currentLayer;
+        ModConfig Config;
 
         public override void Entry(IModHelper helper) {
-            StaticMonitor = Monitor;
+            Config = helper.ReadConfig<ModConfig>();
 
-            var harmony = new Harmony(ModManifest.UniqueID);
-
-            harmony.Patch(
-                original: AccessTools.Method(typeof(MineShaft), nameof(MineShaft.createLadderDown)),
-                prefix: new HarmonyMethod(typeof(ModEntry), nameof(CreateLadderDownPrefix))
-                );
-            harmony.Patch(
-                original: AccessTools.Method(typeof(MineShaft), nameof(MineShaft.createLadderDown)),
-                postfix: new HarmonyMethod(typeof(ModEntry), nameof(CreateLadderDownPostfix))
-                );
-
-            harmony.Patch(
-                original: AccessTools.Method(typeof(MineShaft), nameof(MineShaft.createLadderAt)),
-                prefix: new HarmonyMethod(typeof(ModEntry), nameof(CreateLadderAtPrefix))
-                );
-            harmony.Patch(
-                original: AccessTools.Method(typeof(MineShaft), nameof(MineShaft.createLadderAt)),
-                postfix: new HarmonyMethod(typeof(ModEntry), nameof(CreateLadderAtPostfix))
-                );
+            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
+            helper.Events.Player.Warped += OnWarped;
+            helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
         }
 
-        static void CreateLadderDownPrefix(int x, int y) {
-            tileVector2 = new Vector2(x, y);
+        private void OnWarped(object? sender, StardewModdingAPI.Events.WarpedEventArgs e) {
+            if (e.NewLocation is MineShaft mineShaft) {
+                currentLayer = mineShaft.Map.RequireLayer("Buildings");
+            }
         }
 
-        static void CreateLadderDownPostfix() {
-            Game1.currentLocation.Map.GetLayer("Buildings").Tiles[(int)tileVector2.X, (int)tileVector2.Y].Properties.Add("Passable", "T");
+        private void OnUpdateTicked(object? sender, StardewModdingAPI.Events.UpdateTickedEventArgs e) {
+            if (Context.IsWorldReady) {
+                delay++;
+                if (delay > delayMax) {
+                    if (Game1.currentLocation is MineShaft) {
+                        if (currentLayer == null) return;
+                        List<Vector2> adjacentTiles = Utility.getAdjacentTileLocations(Game1.player.Tile);
+
+                        foreach (Vector2 tile in adjacentTiles) {
+                            Tile currentTile = currentLayer.PickTile(new Location((int)tile.X * 64, (int)tile.Y * 64), Game1.viewport.Size);
+                            
+                            if (currentTile != null && (currentTile.TileIndex == 173 || currentTile.TileIndex == 174) 
+                                && !currentTile.Properties.ContainsKey("Passable")) {
+                                currentTile.Properties.Add("Passable", "T");
+                                if (Config.Logging) Monitor.Log($"Descent found at {tile.X}, {tile.Y}. Making passable", LogLevel.Info);
+                            }
+                        }
+                    }
+
+                    delay = 0;
+                }
+            }
         }
 
-        static void CreateLadderAtPrefix(Vector2 p) {
-            tileVector2 = p;
-        }
+        private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
+            var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (configMenu is null) return;
 
-        static void CreateLadderAtPostfix() {
-            Game1.currentLocation.Map.GetLayer("Buildings").Tiles[(int)tileVector2.X, (int)tileVector2.Y].Properties.Add("Passable", "T");
+            configMenu.Register(
+                mod: this.ModManifest,
+                reset: () => this.Config = new ModConfig(),
+                save: () => this.Helper.WriteConfig(this.Config)
+            );
+
+            configMenu.AddBoolOption(
+                mod: this.ModManifest,
+                name: () => Helper.Translation.Get("logging.label"),
+                tooltip: () => Helper.Translation.Get("logging.tooltip"),
+                getValue: () => this.Config.Logging,
+                setValue: value => this.Config.Logging = value
+            );
+            configMenu.AddNumberOption(
+                mod: this.ModManifest,
+                name: () => Helper.Translation.Get("delay.label"),
+                tooltip: () => Helper.Translation.Get("delay.tooltip"),
+                getValue: () => this.Config.Delay,
+                setValue: value => this.Config.Delay = value,
+                min: 0
+            );
         }
 
     }
