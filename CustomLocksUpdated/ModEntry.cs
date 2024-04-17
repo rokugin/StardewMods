@@ -143,9 +143,10 @@ namespace CustomLocksUpdated {
                             who.friendshipData["Wizard"].Points < 1000) && Config.AllowStrangerRoomEntry) {
                             __instance.playSound("doorClose", new Vector2(tileLocation.X, tileLocation.Y));
                             Game1.warpFarmer("WizardHouseBasement", 4, 4, true);
+                            return false;
                         }
 
-                        return false;
+                        return true;
                     case "Door":
                         if (action.Length > 1) {
                             if (Game1.eventUp && !Config.IgnoreEvents) {
