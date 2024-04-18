@@ -2,5 +2,5 @@
   "logging.label": "Debug logging",
   "logging.tooltip": "Toggle log messages in console.",
   "delay.label": "Delay",
-  "delay.tooltip": "Adjusts delay between checks for descents. Higher numbers lowers performance impact. Default: 10"
+  "delay.tooltip": "Adjusts delay between checks for descents. Setting this number to 0 means the game will check roughly 60 times a second, setting it to 60 means it will check roughly once every second. Higher numbers lowers performance impact. Default: 10"
 }
