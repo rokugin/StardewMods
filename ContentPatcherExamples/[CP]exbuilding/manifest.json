@@ -1,0 +1,11 @@
+{
+  "Name": "Example Building",
+  "Author": "rokugin",
+  "Version": "1.0.0",
+  "Description": "Example building.",
+  "UniqueID": "rokugin.exbuilding",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}
