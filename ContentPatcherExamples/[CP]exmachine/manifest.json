@@ -1,0 +1,11 @@
+{
+  "Name": "Example Machine",
+  "Author": "rokugin",
+  "Version": "1.0.0",
+  "Description": "Example machine.",
+  "UniqueID": "rokugin.exmachine",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}

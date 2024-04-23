@@ -173,6 +173,16 @@ namespace CustomLocksUpdated {
                         }
 
                         return true;
+                    case "Warp_Sunroom_Door":
+                        if (who.getFriendshipHeartLevelForNPC("Caroline") >= 2) {
+                            return true;
+                        } else if (Config.AllowStrangerRoomEntry) {
+                            __instance.playSound("doorClose", new Vector2(tileLocation.X, tileLocation.Y));
+                            Game1.warpFarmer("Sunroom", 5, 13, flip: false);
+                            return false;
+                        }
+
+                        return true;
                     case "Theater_Entrance":
                         if (!Game1.MasterPlayer.hasOrWillReceiveMail("ccMovieTheater")) {
                             return true;
@@ -186,7 +196,7 @@ namespace CustomLocksUpdated {
                         if (Game1.timeOfDay > 2100 || Game1.timeOfDay < 900) {
                             if (!Config.AllowOutsideTime) return true;
                         }
-                        if ((int)Game1.player.lastSeenMovieWeek >= Game1.Date.TotalWeeks) {
+                        if (Game1.player.lastSeenMovieWeek.Value >= Game1.Date.TotalWeeks) {
                             Game1.drawObjectDialogue(Game1.content.LoadString("Strings\\Characters:MovieTheater_AlreadySeen"));
                             return false;
                         }

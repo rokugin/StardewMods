@@ -57,20 +57,22 @@ namespace SafeLightningUpdated {
                     }
                     if (random.NextDouble() < 0.25 - Game1.player.team.AverageDailyLuck() - Game1.player.team.AverageLuckLevel() / 100.0) {
                         try {
-                            if (Utility.TryGetRandom(farm.terrainFeatures, out var tile, out var feature)) {
-                                if (feature is FruitTree fruitTree) {
-                                    lightningEvent.createBolt = true;
-                                    lightningEvent.boltPosition = tile * 64f + new Vector2(32f, -128f);
-                                } else {
-                                    Crop crop = (feature as HoeDirt)?.crop;
-                                    bool num = crop != null && !crop.dead.Value;
-                                    if (feature.performToolAction(null, 0, tile)) {
+                            if (!Config.DisableStrikes) {
+                                if (Utility.TryGetRandom(farm.terrainFeatures, out var tile, out var feature)) {
+                                    if (feature is FruitTree fruitTree) {
                                         lightningEvent.createBolt = true;
                                         lightningEvent.boltPosition = tile * 64f + new Vector2(32f, -128f);
-                                    }
-                                    if (num && crop.dead.Value) {
-                                        lightningEvent.createBolt = true;
-                                        lightningEvent.boltPosition = tile * 64f + new Vector2(32f, 0f);
+                                    } else {
+                                        Crop crop = (feature as HoeDirt)?.crop;
+                                        bool num = crop != null && !crop.dead.Value;
+                                        if (feature.performToolAction(null, 0, tile)) {
+                                            lightningEvent.createBolt = true;
+                                            lightningEvent.boltPosition = tile * 64f + new Vector2(32f, -128f);
+                                        }
+                                        if (num && crop.dead.Value) {
+                                            lightningEvent.createBolt = true;
+                                            lightningEvent.boltPosition = tile * 64f + new Vector2(32f, 0f);
+                                        }
                                     }
                                 }
                             }
@@ -80,10 +82,12 @@ namespace SafeLightningUpdated {
                     }
                     if (!Config.DisableStrikes) farm.lightningStrikeEvent.Fire(lightningEvent);
                 } else if (random.NextDouble() < 0.1) {
-                    Farm.LightningStrikeEvent lightningEvent2 = new Farm.LightningStrikeEvent();
-                    lightningEvent2.smallFlash = true;
-                    Farm farm = Game1.getFarm();
-                    if (!Config.DisableStrikes) farm.lightningStrikeEvent.Fire(lightningEvent2);
+                    if (!Config.DisableStrikes) {
+                        Farm.LightningStrikeEvent lightningEvent2 = new Farm.LightningStrikeEvent();
+                        lightningEvent2.smallFlash = true;
+                        Farm farm = Game1.getFarm();
+                        farm.lightningStrikeEvent.Fire(lightningEvent2);
+                    }
                     return false;
                 }
                 return false;

@@ -27,23 +27,23 @@ namespace StrongerTools {
         private void OnDayStarted(object? sender, StardewModdingAPI.Events.DayStartedEventArgs e) {
             GameLocation location = Game1.getLocationFromName("Backwoods");
             
-            AddTerrainFeature(location, new Vector2(34, 10));
-            AddTerrainFeature(location, new Vector2(41, 16));
-            AddTerrainFeature(location, new Vector2(12, 19));
-            AddTerrainFeature(location, new Vector2(15, 17));
-            AddTerrainFeature(location, new Vector2(20, 20));
-            AddTerrainFeature(location, new Vector2(25, 16));
-            AddTerrainFeature(location, new Vector2(17, 14));
-            AddTerrainFeature(location, new Vector2(19, 12));
-            AddTerrainFeature(location, new Vector2(21, 11));
-            AddTerrainFeature(location, new Vector2(28, 9));
-            AddTerrainFeature(location, new Vector2(46, 12));
+            AddTerrainFeature(location, new Vector2(34, 10), Tree.pineTree);
+            AddTerrainFeature(location, new Vector2(41, 16), Tree.bushyTree);
+            AddTerrainFeature(location, new Vector2(12, 19), Tree.bushyTree);
+            AddTerrainFeature(location, new Vector2(15, 17), Tree.bushyTree);
+            AddTerrainFeature(location, new Vector2(20, 20), Tree.bushyTree);
+            AddTerrainFeature(location, new Vector2(25, 16), Tree.bushyTree);
+            AddTerrainFeature(location, new Vector2(17, 14), Tree.leafyTree);
+            AddTerrainFeature(location, new Vector2(19, 12), Tree.leafyTree);
+            AddTerrainFeature(location, new Vector2(21, 11), Tree.leafyTree);
+            AddTerrainFeature(location, new Vector2(28, 9), Tree.leafyTree);
+            AddTerrainFeature(location, new Vector2(46, 12), Tree.leafyTree);
             Game1.netWorldState.Value.canDriveYourselfToday.Value = true;
         }
 
-        void AddTerrainFeature(GameLocation location, Vector2 tilePosition) {
+        void AddTerrainFeature(GameLocation location, Vector2 tilePosition, string treeType) {
             if (!location.IsTileOccupiedBy(tilePosition)) {
-                location.terrainFeatures.Add(tilePosition, new Tree(Tree.pineTree, Tree.treeStage));
+                location.terrainFeatures.Add(tilePosition, new Tree(treeType, Tree.treeStage));
                 if (config.ShowLogs) Monitor.Log($"Placing stage 5 pine tree at {location.Name} (X:{tilePosition.X}, Y:{tilePosition.Y})", LogLevel.Info);
             }
         }
