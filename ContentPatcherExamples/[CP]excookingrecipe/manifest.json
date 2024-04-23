@@ -1,0 +1,11 @@
+{
+  "Name": "Example Cooking Recipe",
+  "Author": "rokugin",
+  "Version": "1.0.0",
+  "Description": "Example cooking recipe.",
+  "UniqueID": "rokugin.excookingrecipe",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}
