@@ -14,15 +14,13 @@ namespace CustomLocksUpdated {
         public static ModConfig Config;
         public static IMonitor monitor;
 
-        static Harmony harmony;
-
         public override void Entry(IModHelper helper) {
             Config = helper.ReadConfig<ModConfig>();
             monitor = Monitor;
 
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
 
-            harmony = new Harmony(ModManifest.UniqueID);
+            var harmony = new Harmony(ModManifest.UniqueID);
 
             harmony.Patch(
                 original: AccessTools.Method(typeof(Mountain), nameof(Mountain.checkAction), [typeof(Location), typeof(Rectangle), typeof(Farmer)]),
@@ -103,7 +101,6 @@ namespace CustomLocksUpdated {
         static IEnumerable<CodeInstruction> GameLocationPerformAction_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
             var timeMethod = AccessTools.Method(typeof(ModEntry), nameof(GetAllowOutsideTime));
             var roomMethod = AccessTools.Method(typeof(ModEntry), nameof(GetAllowRoomEntry));
-            var festivalMethod = AccessTools.Method(typeof(ModEntry), nameof(GetIgnoreEvents));
 
             var matcher = new CodeMatcher(instructions, generator);
 
@@ -159,6 +156,48 @@ namespace CustomLocksUpdated {
             matcher.InsertAndAdvance(
                 new CodeInstruction(OpCodes.Call, roomMethod),
                 new CodeInstruction(OpCodes.Brtrue, openDoorLabel)
+            );
+
+            matcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldarg_0),
+                new CodeMatch(OpCodes.Ldstr, "doorClose"),
+                new CodeMatch(OpCodes.Ldloc_0),
+                new CodeMatch(OpCodes.Ldflda),
+                new CodeMatch(OpCodes.Ldfld)
+            ).ThrowIfNotMatch("Couldn't find match for wizard basement");
+
+            matcher.CreateLabel(out Label wizardLabel);
+
+            matcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldarg_0),
+                new CodeMatch(OpCodes.Ldfld),
+                new CodeMatch(OpCodes.Ldc_I4_0),
+                new CodeMatch(OpCodes.Callvirt),
+                new CodeMatch(OpCodes.Stloc_S)
+            ).ThrowIfNotMatch("Couldn't find match for wizard hatch dialogue");
+
+            matcher.InsertAndAdvance(
+                new CodeInstruction(OpCodes.Call, roomMethod).MoveLabelsFrom(matcher.Instruction),
+                new CodeInstruction(OpCodes.Brtrue, wizardLabel)
+            );
+
+            matcher.MatchEndForward(
+                new CodeMatch(OpCodes.Ldsfld),
+                new CodeMatch(OpCodes.Ldc_I4),
+                new CodeMatch(OpCodes.Bge_S)
+            ).ThrowIfNotMatch("Couldn't find match for open time check");
+
+            var seenLabel = (Label)matcher.Instruction.operand;
+
+            matcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldc_I4, 900),
+                new CodeMatch(OpCodes.Call),
+                new CodeMatch(OpCodes.Ldstr, " ")
+            ).ThrowIfNotMatch("Couldn't find match for theater open range dialogue");
+
+            matcher.InsertAndAdvance(
+                new CodeInstruction(OpCodes.Call, timeMethod).MoveLabelsFrom(matcher.Instruction),
+                new CodeInstruction(OpCodes.Brtrue, seenLabel)
             );
 
             return matcher.InstructionEnumeration();
