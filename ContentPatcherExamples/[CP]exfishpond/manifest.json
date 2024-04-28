@@ -1,0 +1,11 @@
+{
+    "Name": "Example Fish Pond",
+    "Author": "rokugin",
+    "Version": "1.0.0",
+    "Description": "Example fish pond.",
+    "UniqueID": "rokugin.exfishpond",
+    "UpdateKeys": [],
+    "ContentPackFor": {
+        "UniqueID": "Pathoschild.ContentPatcher"
+    }
+}
