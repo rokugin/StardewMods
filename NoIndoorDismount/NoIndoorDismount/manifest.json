@@ -1,0 +1,10 @@
+{
+  "Name": "No Indoor Dismount",
+  "Author": "Rokugin",
+  "Version": "1.0.0",
+  "Description": "Stops you from being automatically dismounted when entering indoor locations while mounted.",
+  "UniqueID": "rokugin.nodismount",
+  "EntryDll": "NoIndoorDismount.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": [ "" ]
+}
