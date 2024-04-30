@@ -12,8 +12,6 @@ namespace NoIndoorDismount {
             Config = helper.ReadConfig<ModConfig>();
             SMonitor = Monitor;
 
-            helper.Events.GameLoop.GameLaunched += OnGameLaunched;
-
             var harmony = new Harmony(ModManifest.UniqueID);
 
             harmony.Patch(
@@ -30,10 +28,6 @@ namespace NoIndoorDismount {
         static void Game1_ShouldDismountOnWarp_Postfix(ref bool __result, GameLocation __state) {
             bool dismount = __state.IsOutdoors || __state.treatAsOutdoors.Value;
             __result = !dismount;
-        }
-
-        private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
-
         }
 
     }
