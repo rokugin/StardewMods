@@ -22,13 +22,13 @@ namespace NoIndoorDismount {
         }
 
         static void Game1_ShouldDismountOnWarp_Prefix(GameLocation new_location, out GameLocation __state) {
-            __state = new_location;
+            __state = new_location; // set the passthrough GameLocation argument to the original method's new_location argument
         }
 
         static void Game1_ShouldDismountOnWarp_Postfix(ref bool __result, GameLocation __state) {
-            bool dismount = __state.IsOutdoors || __state.treatAsOutdoors.Value;
-            __result = !dismount;
-        }
+            bool dismount = __state.IsOutdoors || __state.treatAsOutdoors.Value; // check if new_location is outdoors or treated as outdoors
+            __result = !dismount; // set the result that's passed back to the original call
+        }                         // true causes dismount and we don't want to dismount in places treated as outdoors
 
     }
 }
