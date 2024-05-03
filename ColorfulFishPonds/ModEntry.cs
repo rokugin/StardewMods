@@ -28,9 +28,13 @@ namespace ColorfulFishPonds {
         }
 
         static void FishPond_DoFishSpecificWaterColoring_Postfix(FishPond __instance) {
+            if (!Config.ModEnabled) return;
+            
             Color? color = null;
 
-            color = ItemContextTagManager.GetColorFromTags(ItemRegistry.Create(ItemRegistry.type_object + __instance.fishType.Value));
+            if (Config.UseContextColors) {
+                color = ItemContextTagManager.GetColorFromTags(ItemRegistry.Create(ItemRegistry.type_object + __instance.fishType.Value));
+            }
             
             foreach (var fish in ColorModel.FishPondColorOverrides) {
                 string[] splitOverride = fish.Value.Split(" ");
