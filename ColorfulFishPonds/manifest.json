@@ -6,5 +6,5 @@
 	"UniqueID": "rokugin.colorfulfishponds",
 	"EntryDll": "ColorfulFishPonds.dll",
 	"MinimumApiVersion": "4.0.0",
-	"UpdateKeys": [ "" ]
+	"UpdateKeys": [ "Nexus:23615" ]
 }
