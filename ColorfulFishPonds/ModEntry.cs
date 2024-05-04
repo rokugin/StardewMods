@@ -26,22 +26,32 @@ namespace ColorfulFishPonds {
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(FishPond_DoFishSpecificWaterColoring_Postfix))
             );
         }
-
+        
         static void FishPond_DoFishSpecificWaterColoring_Postfix(FishPond __instance) {
             if (!Config.ModEnabled) return;
             
-            Color? color = null;
+            Color? color = Color.White;
 
             if (Config.UseContextColors) {
-                color = ItemContextTagManager.GetColorFromTags(ItemRegistry.Create(ItemRegistry.type_object + __instance.fishType.Value));
+                if (__instance.fishType.Value == "162" && __instance.lastUnlockedPopulationGate.Value >= 2) {
+                    color = new Color(250, 30, 30);
+                } else if (__instance.fishType.Value == "796" && __instance.currentOccupants.Value > 2) {
+                    color = new Color(60, 255, 60);
+                } else if (__instance.fishType.Value == "795" && __instance.currentOccupants.Value > 2) {
+                    color = new Color(120, 20, 110);
+                } else if (__instance.fishType.Value == "155" && __instance.currentOccupants.Value > 2) {
+                    color = new Color(150, 100, 200);
+                } else {
+                    color = ItemContextTagManager.GetColorFromTags(ItemRegistry.Create(ItemRegistry.type_object + __instance.fishType.Value));
+                }
             }
             
-            foreach (var fish in ColorModel.FishPondColorOverrides) {
-                string[] splitOverride = fish.Value.Split(" ");
-                int reqPop = Int32.Parse(splitOverride[1]);
-                Color? pondOverrideColor = new Color(int.Parse(splitOverride[2]), int.Parse(splitOverride[3]), int.Parse(splitOverride[4]));
+            foreach (var fish in ColorModel.Changes) {
+                Color? pondOverrideColor = new Color(fish.Value.PondColor.GetValueOrDefault("R"),
+                                                     fish.Value.PondColor.GetValueOrDefault("G"),
+                                                     fish.Value.PondColor.GetValueOrDefault("B"));
 
-                if (__instance.fishType.Value == splitOverride[0] && __instance.currentOccupants.Value > reqPop) {
+                if (__instance.fishType.Value == fish.Value.FishID && __instance.currentOccupants.Value >= fish.Value.RequiredPopulation) {
                     color = pondOverrideColor;
                 }
             }
@@ -62,15 +72,15 @@ namespace ColorfulFishPonds {
                 ColorModel = Helper.Data.ReadJsonFile<ModData>("data.json") ?? new ModData();
                 
                 ModData? data = contentPack.ReadJsonFile<ModData>("content.json");
-                Monitor.Log($"{data.FishPondColorOverrides.Count} overrides.", LogLevel.Info);
+                Monitor.Log($"{data.Changes.Count} overrides.", LogLevel.Info);
 
-                foreach (var fish in data.FishPondColorOverrides) {
-                    if (ColorModel.FishPondColorOverrides.ContainsKey(fish.Key)) {
+                foreach (var fish in data.Changes) {
+                    if (ColorModel.Changes.ContainsKey(fish.Key)) {
                         Monitor.Log($"Content pack: {fish.Key} already present, skipping.\n", LogLevel.Warn);
                         continue;
                     }
                     Monitor.Log($"{fish.Key} color override found, applying.\n", LogLevel.Info);
-                    ColorModel.FishPondColorOverrides.Add(fish.Key, fish.Value);
+                    ColorModel.Changes.Add(fish.Key, fish.Value);
                     Helper.Data.WriteJsonFile("data.json", ColorModel);
                 }
             }
