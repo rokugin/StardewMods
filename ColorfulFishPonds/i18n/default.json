@@ -1,0 +1,8 @@
+{
+  "mod-enabled.label": "Enabled",
+  "mod-enabled.tooltip": "Toggle mod functionality, disable if there's an issue. Default: true",
+  "default-colors.label": "Use Context Colors",
+  "default-colors.tooltip": "Toggle using context colors of fish if no overrides are supplied. Default: true",
+  "required-population.label": "Required Population",
+  "required-population.tooltip": "Number of fish required for context color changes only. Default: 2"
+}

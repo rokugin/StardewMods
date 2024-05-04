@@ -48,7 +48,7 @@ namespace ColorfulFishPonds {
                     }
                 }
             }
-
+            
             foreach (var fish in ColorModel.Changes) {
                 Color? pondOverrideColor = new Color(fish.Value.PondColor.GetValueOrDefault("R"),
                                                      fish.Value.PondColor.GetValueOrDefault("G"),
@@ -63,9 +63,11 @@ namespace ColorfulFishPonds {
         }
 
         private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
-            Helper.Data.WriteJsonFile("data.json", new ModData());
+            SetUpGMCM();
+            Helper.Data.WriteJsonFile("fishPondColorData.json", new ModData());
             Monitor.Log("Loading content packs started.\n", LogLevel.Debug);
             Stopwatch sw = Stopwatch.StartNew();
+            ColorModel = Helper.Data.ReadJsonFile<ModData>("fishPondColorData.json");
 
             foreach (IContentPack contentPack in Helper.ContentPacks.GetOwned()) {
                 Monitor.Log($"Reading content pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} from {contentPack.DirectoryPath}");
@@ -74,8 +76,6 @@ namespace ColorfulFishPonds {
                     Monitor.Log($"Content pack: {contentPack.Manifest.Name} missing required file: content.json, Skipping content pack.", LogLevel.Error);
                     continue;
                 }
-
-                ColorModel = Helper.Data.ReadJsonFile<ModData>("data.json") ?? new ModData();
 
                 ModData? data = contentPack.ReadJsonFile<ModData>("content.json");
                 Monitor.Log($"{data.Changes.Count} overrides.");
@@ -87,12 +87,47 @@ namespace ColorfulFishPonds {
                     }
                     Monitor.Log($"{fish.Key} color override found, applying.\n");
                     ColorModel.Changes.Add(fish.Key, fish.Value);
-                    Helper.Data.WriteJsonFile("data.json", ColorModel);
+                    Helper.Data.WriteJsonFile("fishPondColorData.json", ColorModel);
                 }
             }
 
             sw.Stop();
             Monitor.Log($"Loading content packs finished. [{sw.ElapsedMilliseconds} ms]\n", LogLevel.Debug);
+        }
+
+        private void SetUpGMCM() {
+            var configMenu = this.Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (configMenu is null) return;
+
+            configMenu.Register(
+                mod: this.ModManifest,
+                reset: () => Config = new ModConfig(),
+                save: () => Helper.WriteConfig(Config)
+            );
+
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("mod-enabled.label"),
+                tooltip: () => Helper.Translation.Get("mod-enabled.tooltip"),
+                getValue: () => Config.ModEnabled,
+                setValue: value => Config.ModEnabled = value
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("default-colors.label"),
+                tooltip: () => Helper.Translation.Get("default-colors.tooltip"),
+                getValue: () => Config.UseContextColors,
+                setValue: value => Config.UseContextColors = value
+            );
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("required-population.label"),
+                tooltip: () => Helper.Translation.Get("required-population.tooltip"),
+                getValue: () => Config.RequiredPopulation,
+                setValue: value => Config.RequiredPopulation = value,
+                min: 1,
+                max: 10
+            );
         }
 
         private void OnSaveLoaded(object? sender, StardewModdingAPI.Events.SaveLoadedEventArgs e) {
