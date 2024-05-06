@@ -4,6 +4,8 @@ using StardewValley.Buildings;
 using Microsoft.Xna.Framework;
 using StardewValley;
 using System.Diagnostics;
+using StardewValley.GameData.Objects;
+using StardewValley.GameData.FishPonds;
 
 namespace ColorfulFishPonds {
     internal class ModEntry : Mod {
@@ -29,37 +31,38 @@ namespace ColorfulFishPonds {
         }
 
         static void FishPond_DoFishSpecificWaterColoring_Postfix(FishPond __instance) {
-            if (!Config.ModEnabled) return;
+            try {
+                if (!Config.ModEnabled) return;
 
-            Color? color = Color.White;
+                Color? color = Color.White;
+                bool enoughFish = __instance.currentOccupants.Value >= Config.RequiredPopulation;
 
-            if (Config.UseContextColors) {
-                if (__instance.fishType.Value == "162" && __instance.currentOccupants.Value >= Config.RequiredPopulation) {
-                    color = new Color(250, 30, 30);
-                } else if (__instance.fishType.Value == "796" && __instance.currentOccupants.Value >= Config.RequiredPopulation) {
-                    color = new Color(60, 255, 60);
-                } else if (__instance.fishType.Value == "795" && __instance.currentOccupants.Value >= Config.RequiredPopulation) {
-                    color = new Color(120, 20, 110);
-                } else if (__instance.fishType.Value == "155" && __instance.currentOccupants.Value >= Config.RequiredPopulation) {
-                    color = new Color(150, 100, 200);
-                } else {
-                    if (__instance.currentOccupants.Value >= Config.RequiredPopulation) {
+                if (__instance.overrideWaterColor.Value == Color.White) {
+                    if (Config.UseContextColors && enoughFish) {
                         color = ItemContextTagManager.GetColorFromTags(ItemRegistry.Create(ItemRegistry.type_object + __instance.fishType.Value));
                     }
+
+                    foreach (var fish in ColorModel.Changes) {
+                        Color? pondOverrideColor = new Color(fish.Value.PondColor.GetValueOrDefault("R"),
+                                                             fish.Value.PondColor.GetValueOrDefault("G"),
+                                                             fish.Value.PondColor.GetValueOrDefault("B"));
+
+                        if (__instance.fishType.Value == fish.Value.FishID && enoughFish) {
+                            color = pondOverrideColor;
+                        }
+                    }
+
+                    if (color == null) return;
+
+                    __instance.overrideWaterColor.Value = color.Value;
                 }
             }
-            
-            foreach (var fish in ColorModel.Changes) {
-                Color? pondOverrideColor = new Color(fish.Value.PondColor.GetValueOrDefault("R"),
-                                                     fish.Value.PondColor.GetValueOrDefault("G"),
-                                                     fish.Value.PondColor.GetValueOrDefault("B"));
-
-                if (__instance.fishType.Value == fish.Value.FishID && __instance.currentOccupants.Value >= fish.Value.RequiredPopulation) {
-                    color = pondOverrideColor;
-                }
+            catch (Exception ex) {
+                SMonitor.LogOnce(
+                    $"Harmony patch {nameof(FishPond_DoFishSpecificWaterColoring_Postfix)} encountered an error. Custom fish pond colors might not be applied.\n {ex}",
+                    LogLevel.Error);
+                return;
             }
-
-            __instance.overrideWaterColor.Value = color.Value;
         }
 
         private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {

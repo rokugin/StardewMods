@@ -1,0 +1,13 @@
+{
+  "Name": "Compatibility Content Pack",
+  "Author": "rokugin",
+  "Version": "1.0.0",
+  "Description": "Content pack containing all the color overrides that other supported mods use.",
+  "UniqueID": "rokugin.colorfulfishpondscompat",
+  "UpdateKeys": [],
+  "Dependencies": [],
+  "ContentPackFor": {
+    "UniqueID": "rokugin.colorfulfishponds",
+    "MinimumVersion": "1.0.0"
+  }
+}

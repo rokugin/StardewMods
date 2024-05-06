@@ -1,7 +1,7 @@
 {
 	"Name": "Colorful Fish Ponds",
 	"Author": "rokugin",
-	"Version": "1.0.0",
+	"Version": "1.1.0",
 	"Description": "Allows you to choose the color fish ponds become when fish are placed inside.",
 	"UniqueID": "rokugin.colorfulfishponds",
 	"EntryDll": "ColorfulFishPonds.dll",

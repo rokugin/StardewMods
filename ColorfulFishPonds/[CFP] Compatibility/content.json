@@ -1,0 +1,31 @@
+{
+    "Changes": {
+        "VoidEel": {
+            "FishID": "FlashShifter.StardewValleyExpandedCP_Void_Eel",
+            "RequiredPopulation": 2,
+            "PondColor": {
+                "R": 120,
+                "G": 20,
+                "B": 110
+            }
+        },
+        "RadioactiveBass": {
+            "FishID": "FlashShifter.StardewValleyExpandedCP_Radioactive_Bass",
+            "RequiredPopulation": 2,
+            "PondColor": {
+                "R": 124,
+                "G": 252,
+                "B": 0
+            }
+        },
+        "Butterfish": {
+            "FishID": "FlashShifter.StardewValleyExpandedCP_Butterfish",
+            "RequiredPopulation": 2,
+            "PondColor": {
+                "R": 255,
+                "G": 255,
+                "B": 153
+            }
+        }
+    }
+}
