@@ -1,0 +1,10 @@
+{
+  "Name": "Context Tag Remover",
+  "Author": "rokugin",
+  "Version": "1.0.0",
+  "Description": "Removes context tags in a non-destructive way.",
+  "UniqueID": "rokugin.contexttagremover",
+  "EntryDll": "ContextTagRemover.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": []
+}
