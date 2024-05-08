@@ -13,9 +13,9 @@
   * [Suggested Tags](#suggested-tags)
 
 ## Introduction<span id="introduction"></span>
-Colorful Fish Ponds(CFP) by default makes every fish pond that normally doesn't change color change to the context tag color the fish is set to.
+Colorful Fish Ponds(CFP) by default makes every fish pond that normally doesn't change color change to the dye color the fish is set to.
 
-CFP uses content packs to allow for custom color choices.
+CFP uses content packs to allow for custom color overrides.
 
 ## Content Pack<span id="content-pack"></span>
 Create a new folder in your Mods folder, naming convention dictates that you name it `[CFP] Mod Name`, but as long as your manifest is correct the folder name doesn't matter.
@@ -24,6 +24,7 @@ Create a new folder in your Mods folder, naming convention dictates that you nam
 Create a manifest.json inside your content pack folder.
 
 Example manifest.json:<span id="manifest-example"></span>
+
 ```json
 {
     "Name": "Content Pack Name",
