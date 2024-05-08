@@ -23,8 +23,8 @@ Create a new folder in your Mods folder, naming convention dictates that you nam
 ### Manifest Json<span id="manifest-json"></span>
 Create a manifest.json inside your content pack folder.
 
-Example manifest.json:<span id="manifest-example"></span>
 
+<br>Example manifest.json:<span id="manifest-example"></span>
 ```json
 {
     "Name": "Content Pack Name",
@@ -60,8 +60,8 @@ Example manifest.json:<span id="manifest-example"></span>
 ### Content Json<span id="content-json"></span>
 Create a content.json inside your content pack folder, alongside your manifest.json.
 
-<br>
-Use either or both of the following blocks:
+
+<br>Use either or both of the following blocks:
 ```json
 {
     "SingleOverrides": {
@@ -76,8 +76,8 @@ Use either or both of the following blocks:
 Individual fish color overrides go in **SingleOverrides** and <br>
 overrides for fish caught all in the same location go in **GroupOverrides**.
 
-<br>
-Example content.json for SingleOverrides:<span id="single-overrides"></span>
+
+<br>Example content.json for SingleOverrides:<span id="single-overrides"></span>
 ```json
 {
     "SingleOverrides": {
@@ -108,8 +108,8 @@ ID's can be found in `Data/Objects` or at https://mateusaquino.github.io/stardew
 
 **PondColor** holds the red, green, and blue values for the color override.
 
-<br>
-Example content.json for GroupOverrides:<span id="group-overrides"></span>
+
+<br>Example content.json for GroupOverrides:<span id="group-overrides"></span>
 ```json
 {
 	"GroupOverrides": {
@@ -139,11 +139,11 @@ Really, any tag can be used here but suggested tags can be found [here](#suggest
 
 **PondColor** holds the red, green, and blue values for the color override.
 
-<br>
-Depending on your config settings, you can make use of both override options at the same time so you can also put all your overrides in the same pack.
 
-<br>
-Example of content.json with both overrides:<span id="both-overrides"></span>
+<br>Depending on your config settings, you can make use of both override options at the same time so you can also put all your overrides in the same pack.
+
+
+<br>Example of content.json with both overrides:<span id="both-overrides"></span>
 ```json
 {
     "SingleOverrides": {
