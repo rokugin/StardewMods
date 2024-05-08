@@ -112,7 +112,7 @@ ID's can be found in `Data/Objects` or at https://mateusaquino.github.io/stardew
 <br>Example content.json for GroupOverrides:<span id="group-overrides"></span>
 ```json
 {
-	"GroupOverrides": {
+    "GroupOverrides": {
         "River": {
             "GroupTag": "fish_river",
             "PondColor": {
@@ -122,11 +122,12 @@ ID's can be found in `Data/Objects` or at https://mateusaquino.github.io/stardew
             }
         },
         "Ocean": {
-        	"GroupTag": "fish_ocean",
+            "GroupTag": "fish_ocean",
             "PondColor": {
-            	"R": 0,
+                "R": 0,
                 "G": 150,
                 "B": 255
+            }
         }
     }
 }
@@ -164,7 +165,7 @@ Really, any tag can be used here but suggested tags can be found [here](#suggest
             }
         }
     },
-	"GroupOverrides": {
+    "GroupOverrides": {
         "River": {
             "GroupTag": "fish_river",
             "PondColor": {
@@ -174,11 +175,12 @@ Really, any tag can be used here but suggested tags can be found [here](#suggest
             }
         },
         "Ocean": {
-        	"GroupTag": "fish_ocean",
+            "GroupTag": "fish_ocean",
             "PondColor": {
-            	"R": 0,
+                "R": 0,
                 "G": 150,
                 "B": 255
+            }
         }
     }
 }
