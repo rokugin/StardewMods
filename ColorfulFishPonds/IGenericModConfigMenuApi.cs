@@ -4,8 +4,10 @@ using StardewModdingAPI;
 using StardewValley;
 using Microsoft.Xna.Framework;
 
-namespace ColorfulFishPonds {
-    public interface IGenericModConfigMenuApi {
+namespace ColorfulFishPonds
+{
+    public interface IGenericModConfigMenuApi
+    {
         /*********
         ** Methods
         *********/

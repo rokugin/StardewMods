@@ -6,43 +6,43 @@ using StardewValley.Menus;
 namespace BetterStardrops {
     internal class ModEntry : Mod {
 
-        int attackIncreaseAmount = new();
-        int newAttackIncreaseAmount = new();
+        int attackIncreaseAmount;
+        int newAttackIncreaseAmount;
 
-        int defenseIncreaseAmount = new();
-        int newDefenseIncreaseAmount = new();
+        int defenseIncreaseAmount;
+        int newDefenseIncreaseAmount;
 
-        int immunityIncreaseAmount = new();
-        int newImmunityIncreaseAmount = new();
+        int immunityIncreaseAmount;
+        int newImmunityIncreaseAmount;
 
-        int healthIncreaseAmount = new();
-        int newHealthIncreaseAmount = new();
+        int healthIncreaseAmount;
+        int newHealthIncreaseAmount;
 
-        int staminaIncreaseAmount = new();
-        int newStaminaIncreaseAmount = new();
+        int staminaIncreaseAmount;
+        int newStaminaIncreaseAmount;
 
-        int combatLevelIncreaseAmount = new();
-        int newCombatLevelIncreaseAmount = new();
+        int combatLevelIncreaseAmount;
+        int newCombatLevelIncreaseAmount;
 
-        int farminglevelIncreaseAmount = new();
-        int newFarmingLevelIncreaseAmount = new();
+        int farminglevelIncreaseAmount;
+        int newFarmingLevelIncreaseAmount;
 
-        int fishingLevelIncreaseAmount = new();
-        int newFishingLevelIncreaseAmount = new();
+        int fishingLevelIncreaseAmount;
+        int newFishingLevelIncreaseAmount;
 
-        int foragingLevelIncreaseAmount = new();
-        int newForagingLevelIncreaseAmount = new();
+        int foragingLevelIncreaseAmount;
+        int newForagingLevelIncreaseAmount;
 
-        int luckLevelIncreaseAmount = new();
-        int newLuckLevelIncreaseAmount = new();
+        int luckLevelIncreaseAmount;
+        int newLuckLevelIncreaseAmount;
 
-        int miningLevelIncreaseAmount = new();
-        int newMiningLevelIncreaseAmount = new();
+        int miningLevelIncreaseAmount;
+        int newMiningLevelIncreaseAmount;
 
-        int magneticIncreaseAmount = new();
-        int newMagneticIncreaseAmount = new();
+        int magneticIncreaseAmount;
+        int newMagneticIncreaseAmount;
 
-        int stardropsFound = new();
+        int stardropsFound;
 
         ModConfig config = new();
         BuffMaker buffMaker = new BuffMaker();

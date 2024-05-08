@@ -5,22 +5,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ColorfulFishPonds {
-    public sealed class ModData {
-        
-        public Dictionary<string, FishPondColorOverride> Changes { get; set; } = new Dictionary<string, FishPondColorOverride>();
-        
+namespace ColorfulFishPonds
+{
+    public sealed class ModData
+    {
+
+        public Dictionary<string, SingleFishColorOverride> SingleOverrides { get; set; } = new Dictionary<string, SingleFishColorOverride>();
+        public Dictionary<string, FishGroupColorOverride> GroupOverrides { get; set; } = new Dictionary<string, FishGroupColorOverride>();
+
     }
 
-    public class FishPondColorOverride {
-
-        public string FishID { get; set; }
-        public int RequiredPopulation { get; set; } = 1;
+    public class SingleFishColorOverride
+    {
+        public string? FishID { get; set; }
         public Dictionary<string, int> PondColor = new Dictionary<string, int>() {
             { "R", 0 },
             { "G", 0 },
             { "B", 0 }
         };
-        
+
+    }
+
+    public class FishGroupColorOverride
+    {
+        public string? GroupTag { get; set; }
+        public Dictionary<string, int> PondColor = new Dictionary<string, int>() {
+            { "R", 0 },
+            { "G", 0 },
+            { "B", 0 }
+        };
     }
 }
