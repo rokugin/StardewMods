@@ -4,26 +4,30 @@ using StardewValley.Buildings;
 using Microsoft.Xna.Framework;
 using StardewValley;
 using System.Diagnostics;
-using StardewValley.GameData.Objects;
-using StardewValley.GameData.FishPonds;
 
 namespace ColorfulFishPonds {
     internal class ModEntry : Mod {
 
         public static ModConfig Config = new();
         public static IMonitor? SMonitor;
+        public static IModHelper? SHelper;
 
         static ModData? ColorOverrideModel;
+
+        static List<FishPond> PrismaticPonds = new List<FishPond>();
 
         public override void Entry(IModHelper helper) {
             Config = helper.ReadConfig<ModConfig>();
             SMonitor = Monitor;
+            SHelper = Helper;
 
-            helper.ConsoleCommands.Add("rokugin.fishpack", "\n\nCommands:\n" + 
+            helper.ConsoleCommands.Add("rokugin.fishpack", "\n\nCommands:\n" +
                 "reload\n    Reloads related content packs and refreshes pond colors.\n", PackCommands);
 
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
+            helper.Events.Multiplayer.PeerConnected += OnPeerConnected;
 
             var harmony = new Harmony(ModManifest.UniqueID);
 
@@ -31,49 +35,100 @@ namespace ColorfulFishPonds {
                 original: AccessTools.Method(typeof(FishPond), "doFishSpecificWaterColoring"),
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(FishPond_DoFishSpecificWaterColoring_Postfix))
             );
+            harmony.Patch(
+                original: AccessTools.Method(typeof(FishPond), "addFishToPond"),
+                postfix: new HarmonyMethod(typeof(ModEntry), nameof(FishPond_RefreshColor_Postfix))
+            );
+            harmony.Patch(
+                original: AccessTools.Method(typeof(FishPond), nameof(FishPond.CatchFish)),
+                postfix: new HarmonyMethod(typeof(ModEntry), nameof(FishPond_RefreshColor_Postfix))
+            );
+            harmony.Patch(
+                original: AccessTools.Method(typeof(FishPond), nameof(FishPond.ClearPond)),
+                postfix: new HarmonyMethod(typeof(ModEntry), nameof(FishPond_ClearPond_Postfix))
+            );
+        }
+
+        private void OnPeerConnected(object? sender, StardewModdingAPI.Events.PeerConnectedEventArgs e) {
+            RefreshPondColors();
+        }
+
+        private void OnUpdateTicked(object? sender, StardewModdingAPI.Events.UpdateTickedEventArgs e) {
+            if (!Context.IsWorldReady || Context.IsMultiplayer) return;
+
+            if (e.IsMultipleOf(10)) {
+                foreach (var pond in PrismaticPonds) {
+                    if (!pond.modData.ContainsKey("rokuginRandomInt")) {
+                        int r = new Random().Next(0, 100);
+                        pond.modData.Add("rokuginRandomInt", r.ToString());
+                    }
+
+                    pond.overrideWaterColor.Value = Utility.GetPrismaticColor(int.Parse(pond.modData["rokuginRandomInt"]), Config.PrismaticSpeed);
+                }
+            }
+        }
+
+        static void FishPond_RefreshColor_Postfix(FishPond __instance) {
+            PrismaticPonds.Remove(__instance);
+            SHelper!.Reflection.GetMethod(__instance, "doFishSpecificWaterColoring").Invoke();
+        }
+
+        static void FishPond_ClearPond_Postfix(FishPond __instance) {
+            PrismaticPonds.Remove(__instance);
+            __instance.modData.Remove("rokuginRandomInt");
+            SHelper!.Reflection.GetMethod(__instance, "doFishSpecificWaterColoring").Invoke();
+
         }
 
         static void FishPond_DoFishSpecificWaterColoring_Postfix(FishPond __instance) {
             try {
                 if (!Config.ModEnabled) return;
 
-                Color? color = Color.White;
-                bool enoughFish = __instance.currentOccupants.Value >= Config.RequiredPopulation;
+                if (Context.IsMainPlayer) {
+                    Color? color = Color.White;
+                    bool enoughFish = __instance.currentOccupants.Value >= Config.RequiredPopulation;
 
-                if (Config.DyeColors && enoughFish) {
-                    color = ItemContextTagManager.GetColorFromTags(ItemRegistry.Create(ItemRegistry.type_object + __instance.fishType.Value));
-                }
-
-                if (ColorOverrideModel != null) {
-                    foreach (var group in ColorOverrideModel.GroupOverrides) {
-                        if (Game1.objectData.TryGetValue(__instance.fishType.Value, out var objectData) &&
-                            objectData.ContextTags.Contains(group.Value.GroupTag) && enoughFish) {
-                            Color groupOverrideColor = new Color(group.Value.PondColor.GetValueOrDefault("R"),
-                                                             group.Value.PondColor.GetValueOrDefault("G"),
-                                                             group.Value.PondColor.GetValueOrDefault("B"));
-                            color = groupOverrideColor;
-                            break;
-                        };
+                    if (Config.DyeColors && enoughFish) {
+                        color = ItemContextTagManager.GetColorFromTags(ItemRegistry.Create(ItemRegistry.type_object + __instance.fishType.Value));
                     }
 
-                    if (!Config.DisableSingleRecolors) {
-                        foreach (var fish in ColorOverrideModel.SingleOverrides) {
-                            if (__instance.fishType.Value == fish.Value.FishID && enoughFish) {
-                                Color singleOverrideColor = new Color(fish.Value.PondColor.GetValueOrDefault("R"),
-                                                                 fish.Value.PondColor.GetValueOrDefault("G"),
-                                                                 fish.Value.PondColor.GetValueOrDefault("B"));
-                                color = singleOverrideColor;
+                    if (ColorOverrideModel != null) {
+                        foreach (var group in ColorOverrideModel.GroupOverrides) {
+                            if (Game1.objectData.TryGetValue(__instance.fishType.Value, out var objectData) &&
+                                objectData.ContextTags.Contains(group.Value.GroupTag) && enoughFish) {
+                                Color groupOverrideColor = new Color(group.Value.PondColor.GetValueOrDefault("R"),
+                                                                 group.Value.PondColor.GetValueOrDefault("G"),
+                                                                 group.Value.PondColor.GetValueOrDefault("B"));
+                                color = groupOverrideColor;
                                 break;
+                            };
+                        }
+
+                        if (!Config.DisableSingleRecolors) {
+                            foreach (var fish in ColorOverrideModel.SingleOverrides) {
+                                if (__instance.fishType.Value == fish.Value.FishID && enoughFish) {
+                                    Color singleOverrideColor = new Color(fish.Value.PondColor.GetValueOrDefault("R"),
+                                                                     fish.Value.PondColor.GetValueOrDefault("G"),
+                                                                     fish.Value.PondColor.GetValueOrDefault("B"));
+
+                                    if (!Context.IsMultiplayer && fish.Value.IsPrismatic && !PrismaticPonds.Contains(__instance)) {
+                                        PrismaticPonds.Add(__instance);
+                                    } else {
+                                        color = singleOverrideColor;
+                                    }
+
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (color == null) {
-                        SMonitor!.Log("Override color is null, aborting\n", Config.Debugging ? LogLevel.Debug : LogLevel.Trace);
-                        return;
-                    }
+                        if (color == null) {
+                            SMonitor!.Log("Override color is null, aborting\n", Config.Debugging ? LogLevel.Debug : LogLevel.Trace);
+                            return;
+                        }
 
-                    __instance.overrideWaterColor.Value = color.Value;
+                        __instance.overrideWaterColor.Value = color.Value;
+                    }
                 }
             }
             catch (Exception ex) {
@@ -96,6 +151,22 @@ namespace ColorfulFishPonds {
         private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
             SetUpGMCM();
             ReadContentPacks();
+        }
+
+        private void OnDayStarted(object? sender, StardewModdingAPI.Events.DayStartedEventArgs e) {
+            RefreshPondColors();
+        }
+
+        void RefreshPondColors() {
+            PrismaticPonds.Clear();
+
+            foreach (var location in Game1.locations) {
+                foreach (var building in location.buildings) {
+                    if (building.buildingType.Value == "Fish Pond") {
+                        Helper.Reflection.GetMethod((FishPond)building, "doFishSpecificWaterColoring").Invoke();
+                    }
+                }
+            }
         }
 
         void ReadContentPacks() {
@@ -187,22 +258,23 @@ namespace ColorfulFishPonds {
                 getValue: () => Config.DisableSingleRecolors,
                 setValue: value => Config.DisableSingleRecolors = value
             );
-        }
-
-        private void OnDayStarted(object? sender, StardewModdingAPI.Events.DayStartedEventArgs e) {
-            RefreshPondColors();
-        }
-
-        void RefreshPondColors() {
-            if (!Context.IsWorldReady) return;
-
-            foreach (var location in Game1.locations) {
-                foreach (var building in location.buildings) {
-                    if (building.buildingType.Value == "Fish Pond") {
-                        Helper.Reflection.GetMethod((FishPond)building, "doFishSpecificWaterColoring").Invoke();
-                    }
-                }
-            }
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("debugging.label"),
+                tooltip: () => Helper.Translation.Get("debugging.tooltip"),
+                getValue: () => Config.Debugging,
+                setValue: value => Config.Debugging = value
+            );
+            configMenu.AddNumberOption(
+                mod: ModManifest,
+                name: () => Helper.Translation.Get("prismatic-speed.label"),
+                tooltip: () => Helper.Translation.Get("prismatic-speed.tooltip"),
+                getValue: () => Config.PrismaticSpeed,
+                setValue: value => Config.PrismaticSpeed = value,
+                min: 0f,
+                max: 1f,
+                interval: 0.05f
+            );
         }
 
     }

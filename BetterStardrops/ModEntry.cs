@@ -5,41 +5,55 @@ using StardewValley.Menus;
 
 namespace BetterStardrops {
     internal class ModEntry : Mod {
+        //void SetUpInts() {
+        //    attackIncreaseAmount = config.AttackIncreaseAmount;
+        //    defenseIncreaseAmount = config.DefenseIncreaseAmount;
+        //    immunityIncreaseAmount = config.ImmunityIncreaseAmount;
+        //    healthIncreaseAmount = config.HealthIncreaseAmount;
+        //    staminaIncreaseAmount = config.StaminaIncreaseAmount;
+        //    combatLevelIncreaseAmount = config.CombatLevelIncreaseAmount;
+        //    farminglevelIncreaseAmount = config.FarmingLevelIncreaseAmount;
+        //    fishingLevelIncreaseAmount = config.FishingLevelIncreaseAmount;
+        //    foragingLevelIncreaseAmount = config.ForagingLevelIncreaseAmount;
+        //    luckLevelIncreaseAmount = config.LuckLevelIncreaseAmount;
+        //    miningLevelIncreaseAmount = config.MiningLevelIncreaseAmount;
+        //    magneticIncreaseAmount = config.MagneticIncreaseAmount;
+        //}
 
-        int attackIncreaseAmount;
+        int attackIncreaseAmount => config.AttackIncreaseAmount;
         int newAttackIncreaseAmount;
 
-        int defenseIncreaseAmount;
+        int defenseIncreaseAmount => config.DefenseIncreaseAmount;
         int newDefenseIncreaseAmount;
 
-        int immunityIncreaseAmount;
+        int immunityIncreaseAmount => config.ImmunityIncreaseAmount;
         int newImmunityIncreaseAmount;
 
-        int healthIncreaseAmount;
+        int healthIncreaseAmount => config.HealthIncreaseAmount;
         int newHealthIncreaseAmount;
 
-        int staminaIncreaseAmount;
+        int staminaIncreaseAmount => config.StaminaIncreaseAmount;
         int newStaminaIncreaseAmount;
 
-        int combatLevelIncreaseAmount;
+        int combatLevelIncreaseAmount => config.CombatLevelIncreaseAmount;
         int newCombatLevelIncreaseAmount;
 
-        int farminglevelIncreaseAmount;
+        int farminglevelIncreaseAmount => config.FarmingLevelIncreaseAmount;
         int newFarmingLevelIncreaseAmount;
 
-        int fishingLevelIncreaseAmount;
+        int fishingLevelIncreaseAmount => config.FishingLevelIncreaseAmount;
         int newFishingLevelIncreaseAmount;
 
-        int foragingLevelIncreaseAmount;
+        int foragingLevelIncreaseAmount => config.ForagingLevelIncreaseAmount;
         int newForagingLevelIncreaseAmount;
 
-        int luckLevelIncreaseAmount;
+        int luckLevelIncreaseAmount => config.LuckLevelIncreaseAmount;
         int newLuckLevelIncreaseAmount;
 
-        int miningLevelIncreaseAmount;
+        int miningLevelIncreaseAmount => config.MiningLevelIncreaseAmount;
         int newMiningLevelIncreaseAmount;
 
-        int magneticIncreaseAmount;
+        int magneticIncreaseAmount => config.MagneticIncreaseAmount;
         int newMagneticIncreaseAmount;
 
         int stardropsFound;
@@ -77,7 +91,7 @@ namespace BetterStardrops {
                 config.ResetMaxHealth = false;
             }
 
-            SetUpInts();
+            //SetUpInts();
             stardropsFound = Utility.numStardropsFound(Game1.player);
 
             if (config.ShowLogging && stardropsFound < 1) {
@@ -173,25 +187,6 @@ namespace BetterStardrops {
                 }
             }
         }
-
-        void SetUpInts() {
-            attackIncreaseAmount = config.AttackIncreaseAmount;
-            defenseIncreaseAmount = config.DefenseIncreaseAmount;
-            immunityIncreaseAmount = config.ImmunityIncreaseAmount;
-            healthIncreaseAmount = config.HealthIncreaseAmount;
-            staminaIncreaseAmount = config.StaminaIncreaseAmount;
-            combatLevelIncreaseAmount = config.CombatLevelIncreaseAmount;
-            farminglevelIncreaseAmount = config.FarmingLevelIncreaseAmount;
-            fishingLevelIncreaseAmount = config.FishingLevelIncreaseAmount;
-            foragingLevelIncreaseAmount = config.ForagingLevelIncreaseAmount;
-            luckLevelIncreaseAmount = config.LuckLevelIncreaseAmount;
-            miningLevelIncreaseAmount = config.MiningLevelIncreaseAmount;
-            magneticIncreaseAmount = config.MagneticIncreaseAmount;
-        }
-
-
-
-
 
         void SetUpGMCM() {
             var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");

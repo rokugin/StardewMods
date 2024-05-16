@@ -4,16 +4,14 @@ using StardewValley;
 using GenericModConfigMenu;
 using StardewValley.TerrainFeatures;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using StardewValley.Locations;
-using xTile.Tiles;
 using HarmonyLib;
-using xTile.ObjectModel;
+using StardewValley.Objects;
+using Object = StardewValley.Object;
 
 namespace StrongerTools {
     internal class ModEntry : Mod {
 
-        Item item;
+        Item? item;
         ModConfig config = new();
         
         public override void Entry(IModHelper helper) {
@@ -22,6 +20,17 @@ namespace StrongerTools {
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.Input.ButtonPressed += OnButtonPressed;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
+
+            var harmony = new Harmony(ModManifest.UniqueID);
+
+            harmony.Patch(
+                original: AccessTools.Method(typeof(Trinket), nameof(Trinket.canBeShipped)),
+                postfix: new HarmonyMethod(typeof(ModEntry), nameof(Trinket_CanBeShipped_Postfix))
+            );
+        }
+
+        static void Trinket_CanBeShipped_Postfix(ref bool __result) {
+            __result = true;
         }
 
         private void OnDayStarted(object? sender, StardewModdingAPI.Events.DayStartedEventArgs e) {
@@ -49,41 +58,7 @@ namespace StrongerTools {
         }
 
         private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
-            var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
-            if (configMenu is null) return;
-
-            // register mod
-            configMenu.Register(
-                mod: ModManifest,
-                reset: () => config = new ModConfig(),
-                save: () => Helper.WriteConfig(config)
-            );
-
-            configMenu.AddSectionTitle(
-                mod: ModManifest,
-                text: () => "Debug"
-            );
-            configMenu.AddBoolOption(
-                mod: ModManifest,
-                getValue: () => config.ShowLogs,
-                setValue: value => config.ShowLogs = value,
-                name: () => "Enabled"
-            );
-            
-            //EditAudio("thunder", "mySound.wav", "Sound");
-            //EditAudio("thunder_small", "mySound.wav", "Sound");
-        }
-
-        void EditAudio(string cue, string audioFile, string category) {
-            var existingCueDef = Game1.soundBank.GetCueDefinition(cue);
-            SoundEffect audio;
-            string filePathCombined = Path.Combine(Helper.DirectoryPath, audioFile);
-
-            using (var stream = new FileStream(filePathCombined, FileMode.Open)) {
-                audio = SoundEffect.FromStream(stream);
-            }
-
-            existingCueDef.SetSound(audio, Game1.audioEngine.GetCategoryIndex(category), false);
+            SetupGMCM();
         }
 
         private void OnButtonPressed(object? sender, StardewModdingAPI.Events.ButtonPressedEventArgs e) {
@@ -106,6 +81,29 @@ namespace StrongerTools {
                     if (config.ShowLogs) Monitor.Log($"{pickaxe.Name} current additional power: +{pickaxe.additionalPower.Value}", LogLevel.Info);
                 }
             }
+        }
+
+        void SetupGMCM() {
+            var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
+            if (configMenu is null) return;
+
+            // register mod
+            configMenu.Register(
+                mod: ModManifest,
+                reset: () => config = new ModConfig(),
+                save: () => Helper.WriteConfig(config)
+            );
+
+            configMenu.AddSectionTitle(
+                mod: ModManifest,
+                text: () => "Debug"
+            );
+            configMenu.AddBoolOption(
+                mod: ModManifest,
+                getValue: () => config.ShowLogs,
+                setValue: value => config.ShowLogs = value,
+                name: () => "Enabled"
+            );
         }
 
     }

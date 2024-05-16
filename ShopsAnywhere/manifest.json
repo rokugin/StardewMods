@@ -1,0 +1,10 @@
+{
+  "name": "Shops Anywhere",
+  "author": "rokugin",
+  "version": "1.0.0",
+  "description": "Open shops anywhere.",
+  "uniqueID": "rokugin.shopsanywhere",
+  "entryDLL": "ShopsAnywhere.dll",
+  "minimumapiversion": "4.0.0",
+  "updatekeys": []
+}
