@@ -176,7 +176,8 @@ namespace ColorfulFishPonds {
             ColorOverrideModel = Helper.Data.ReadJsonFile<ModData>("fishPondColorData.json");
 
             foreach (IContentPack contentPack in Helper.ContentPacks.GetOwned()) {
-                Monitor.Log($"Reading content pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} from {contentPack.DirectoryPath}", Config.Debugging ? LogLevel.Debug : LogLevel.Trace);
+                Monitor.Log($"Reading content pack: {contentPack.Manifest.Name} {contentPack.Manifest.Version} from {contentPack.DirectoryPath}", 
+                    Config.Debugging ? LogLevel.Debug : LogLevel.Trace);
 
                 if (!contentPack.HasFile("content.json")) {
                     Monitor.Log($"Content pack: {contentPack.Manifest.Name} missing required file: content.json, Skipping content pack.", LogLevel.Error);

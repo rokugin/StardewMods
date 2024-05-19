@@ -37,9 +37,16 @@ namespace ShopsAnywhere {
 
         private void OnRenderedActiveMenu(object? sender, RenderedActiveMenuEventArgs e) {
             if (IsInventoryPage()) {
-                advShopButton.bounds =
-                    new Rectangle(Game1.activeClickableMenu.xPositionOnScreen + config.AdvShopButtonOffsetX,
-                    Game1.activeClickableMenu.yPositionOnScreen + config.AdvShopButtonOffsetY, AssetManager.advShopTexture.Width, AssetManager.advShopTexture.Height);
+                advShopButton = new ClickableTextureComponent(
+                    bounds: new Rectangle(Game1.activeClickableMenu.xPositionOnScreen + config.AdvShopButtonOffsetX,
+                    Game1.activeClickableMenu.yPositionOnScreen + config.AdvShopButtonOffsetY, AssetManager.advShopTexture.Width, AssetManager.advShopTexture.Height),
+                    texture: AssetManager.advShopTexture,
+                    sourceRect: Rectangle.Empty,
+                    scale: 1f
+                    );
+                //advShopButton.bounds =
+                //    new Rectangle(Game1.activeClickableMenu.xPositionOnScreen + config.AdvShopButtonOffsetX,
+                //    Game1.activeClickableMenu.yPositionOnScreen + config.AdvShopButtonOffsetY, AssetManager.advShopTexture.Width, AssetManager.advShopTexture.Height);
                 advShopButton.draw(e.SpriteBatch);
                 GameMenu activeMenu = Game1.activeClickableMenu as GameMenu;
                 activeMenu.drawMouse(e.SpriteBatch);
