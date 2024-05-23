@@ -13,6 +13,7 @@ namespace StrongerTools {
 
         Item? item;
         ModConfig config = new();
+        bool hardwareCursor = false;
 
         public override void Entry(IModHelper helper) {
             config = helper.ReadConfig<ModConfig>();
@@ -20,6 +21,8 @@ namespace StrongerTools {
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.Input.ButtonPressed += OnButtonPressed;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
+            helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
+            helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
 
             var harmony = new Harmony(ModManifest.UniqueID);
 
@@ -27,6 +30,15 @@ namespace StrongerTools {
                 original: AccessTools.Method(typeof(Trinket), nameof(Trinket.canBeShipped)),
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(Trinket_CanBeShipped_Postfix))
             );
+        }
+
+        private void OnReturnedToTitle(object? sender, StardewModdingAPI.Events.ReturnedToTitleEventArgs e) {
+            hardwareCursor = false;
+        }
+
+        private void OnUpdateTicked(object? sender, StardewModdingAPI.Events.UpdateTickedEventArgs e) {
+            if (hardwareCursor) return;
+            EnableHardwareCursor();
         }
 
         static void Trinket_CanBeShipped_Postfix(ref bool __result) {
@@ -53,13 +65,33 @@ namespace StrongerTools {
         void AddTerrainFeature(GameLocation location, Vector2 tilePosition, string treeType) {
             if (!location.IsTileOccupiedBy(tilePosition)) {
                 location.terrainFeatures.Add(tilePosition, new Tree(treeType, Tree.treeStage));
-                if (config.ShowLogs) Monitor.Log($"Placing stage 5 pine tree at {location.Name} (X:{tilePosition.X}, Y:{tilePosition.Y})", LogLevel.Info);
+                if (config.ShowLogs) Monitor.Log(
+                    $"Placing stage 5 {GetTreeNameByID(treeType)} tree at {location.Name} (X:{tilePosition.X}, Y:{tilePosition.Y})", LogLevel.Info);
             }
+        }
+
+        string GetTreeNameByID(string id) {
+            string treeName;
+            switch (id) {
+                case "1":
+                    treeName = "Oak";
+                    break;
+                case "2":
+                    treeName = "Maple";
+                    break;
+                case "3":
+                    treeName = "Pine";
+                    break;
+                default:
+                    treeName = "";
+                    break;
+            }
+            return treeName;
         }
 
         private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
             SetupGMCM();
-            Game1.options.hardwareCursor = true;
+            EnableHardwareCursor();
         }
 
         private void OnButtonPressed(object? sender, StardewModdingAPI.Events.ButtonPressedEventArgs e) {
@@ -82,6 +114,11 @@ namespace StrongerTools {
                     if (config.ShowLogs) Monitor.Log($"{pickaxe.Name} current additional power: +{pickaxe.additionalPower.Value}", LogLevel.Info);
                 }
             }
+        }
+
+        void EnableHardwareCursor() {
+            Game1.options.hardwareCursor = true;
+            hardwareCursor = true;
         }
 
         void SetupGMCM() {
