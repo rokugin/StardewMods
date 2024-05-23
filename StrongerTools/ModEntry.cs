@@ -13,10 +13,10 @@ namespace StrongerTools {
 
         Item? item;
         ModConfig config = new();
-        
+
         public override void Entry(IModHelper helper) {
             config = helper.ReadConfig<ModConfig>();
-            
+
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
             helper.Events.Input.ButtonPressed += OnButtonPressed;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
@@ -35,7 +35,7 @@ namespace StrongerTools {
 
         private void OnDayStarted(object? sender, StardewModdingAPI.Events.DayStartedEventArgs e) {
             GameLocation location = Game1.getLocationFromName("Backwoods");
-            
+
             AddTerrainFeature(location, new Vector2(34, 10), Tree.pineTree);
             AddTerrainFeature(location, new Vector2(41, 16), Tree.bushyTree);
             AddTerrainFeature(location, new Vector2(12, 19), Tree.bushyTree);
@@ -59,6 +59,7 @@ namespace StrongerTools {
 
         private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
             SetupGMCM();
+            Game1.options.hardwareCursor = true;
         }
 
         private void OnButtonPressed(object? sender, StardewModdingAPI.Events.ButtonPressedEventArgs e) {
@@ -66,7 +67,7 @@ namespace StrongerTools {
             if (Game1.activeClickableMenu != null) return;
 
             item = Game1.player.CurrentTool;
-            
+
             if (e.Button.IsUseToolButton()) {
                 if (item is Pickaxe pickaxe) {
                     switch (pickaxe.ItemId) {
