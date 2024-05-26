@@ -1,0 +1,11 @@
+{
+  "Name": "Example Saloon Room",
+  "Author": "rokugin",
+  "Version": "1.0.0",
+  "Description": "Example Saloon room.",
+  "UniqueID": "rokugin.exsaloonroom",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}
