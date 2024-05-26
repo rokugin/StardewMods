@@ -1,0 +1,11 @@
+{
+  "Name": "Custom Mail",
+  "Author": "rokugin",
+  "Version": "1.0.0",
+  "Description": "Sends custom mail.",
+  "UniqueID": "rokugin.custommail",
+  "UpdateKeys": [],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  }
+}
