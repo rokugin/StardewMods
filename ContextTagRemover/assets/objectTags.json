@@ -1,0 +1,17 @@
+{
+  "74": [
+    "crystalarium_banned"
+  ],
+  "275": [
+    "geode_crusher_ignored"
+  ],
+  "791": [
+    "geode_crusher_ignored"
+  ]//, //disabled until 1.6.9 geode crusher fixes
+  //"MysteryBox": [
+  //  "geode_crusher_ignored"
+  //],
+  //"GoldenMysteryBox": [
+  //  "geode_crusher_ignored"
+  //]
+}
