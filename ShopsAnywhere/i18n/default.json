@@ -1,0 +1,8 @@
+{
+  "shops-button-config.name": "Shops Menu Button",
+  "x-offset.name": "X Offset",
+  "x-offset.tooltip": "Pixel X offset. Default: -48",
+  "y-offset.name": "Y Offset",
+  "y-offset.tooltip": "Pixel Y offset. Default: 555",
+  "shops-button.name": "Shops"
+}
