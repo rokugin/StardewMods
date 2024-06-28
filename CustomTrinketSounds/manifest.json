@@ -1,0 +1,11 @@
+{
+  "$schema": "https://smapi.io/schemas/manifest.json",
+  "Author": "rokugin",
+  "Description": "Changes trinkets to use custom audio cues from the soundbank.",
+  "Name": "Custom Trinket Sounds",
+  "UniqueID": "rokugin.trinketsounds",
+  "Version": "1.0.0",
+  "EntryDll": "CustomTrinketSounds.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": []
+}
