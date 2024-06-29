@@ -1,0 +1,35 @@
+{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Format": "2.2.0",
+    "Changes": [
+        {
+            "LogName": "Load Suki portrait",
+            "Action": "Load",
+            "Target": "Portraits/{{ModId}}_Suki",
+            "FromFile": "assets/Suki.png"
+        },
+        {
+            "Action": "EditData",
+            "Target": "{{Platonymous.ScaleUp/Assets}}",
+            "Entries": {
+                "{{ModId}}_ScaleUp_Suki": {
+                    "Asset": "Portraits/{{ModId}}_Suki",
+                    "Scale": 4
+                }
+            }
+        },
+        {
+            "LogName": "Add Suki portrait to Traveling Merchant shop",
+            "Action": "EditData",
+            "Target": "Data/Shops",
+            "TargetField": [
+                "Traveler",
+                "Owners",
+                "AnyOrNone"
+            ],
+            "Entries": {
+                "Portrait": "Portraits/{{ModId}}_Suki"
+            }
+        }
+    ]
+}

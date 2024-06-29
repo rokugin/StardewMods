@@ -1,0 +1,17 @@
+{
+    "Name": "Scale Up Suki Example",
+    "Author": "rokugin",
+    "Version": "1.0.0",
+    "Description": "Example mod to show how to use Scale Up 2 to add a high res portrait to the Traveling Merchant.",
+    "UniqueID": "rokugin.scalesuki",
+    "UpdateKeys": [],
+    "Dependencies": [
+        {
+            "UniqueID": "Platonymous.ScaleUp",
+            "IsRequired": true
+        }
+    ],
+    "ContentPackFor": {
+        "UniqueID": "Pathoschild.ContentPatcher"
+    }
+}
