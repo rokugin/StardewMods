@@ -11,7 +11,7 @@ using StardewValley.Triggers;
 using StardewValley.Delegates;
 
 namespace StrongerTools {
-    internal class ModEntry : Mod {
+    public class ModEntry : Mod {
 
         Item? item;
         ModConfig config = new();
@@ -166,7 +166,6 @@ namespace StrongerTools {
             var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
             if (configMenu is null) return;
 
-            // register mod
             configMenu.Register(
                 mod: ModManifest,
                 reset: () => config = new ModConfig(),

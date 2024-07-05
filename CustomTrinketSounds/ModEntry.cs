@@ -14,7 +14,7 @@ namespace CustomTrinketSounds {
         public override void Entry(IModHelper helper) {
             Config = helper.ReadConfig<ModConfig>();
             SMonitor = Monitor;
-
+            
             var harmony = new Harmony(ModManifest.UniqueID);
 
             harmony.Patch(
