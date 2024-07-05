@@ -5,5 +5,5 @@
   "Description": "Code for standalone crane game mod.",
   "UniqueID": "rokugin.crane",
   "EntryDll": "StandaloneCraneGame.dll",
-  "UpdateKeys": []
+  "UpdateKeys": [ "Nexus:25830" ]
 }
