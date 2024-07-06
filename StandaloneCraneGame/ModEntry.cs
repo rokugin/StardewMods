@@ -33,7 +33,11 @@ namespace StandaloneCraneGame {
         }
 
         SObject? GetObjectAtCursor(ICursorPosition cursor) {
-            var tile = cursor.GrabTile;
+            var tile = Game1.currentCursorTile;
+
+            if (!Utility.tileWithinRadiusOfPlayer((int)tile.X, (int)tile.Y, 1, Game1.player)) {
+                tile = Game1.player.GetGrabTile();
+            }
             return Game1.currentLocation?.getObjectAtTile((int)tile.X, (int)tile.Y);
         }
 
