@@ -38,6 +38,7 @@ namespace StandaloneCraneGame {
             if (!Utility.tileWithinRadiusOfPlayer((int)tile.X, (int)tile.Y, 1, Game1.player)) {
                 tile = Game1.player.GetGrabTile();
             }
+
             return Game1.currentLocation?.getObjectAtTile((int)tile.X, (int)tile.Y);
         }
 
