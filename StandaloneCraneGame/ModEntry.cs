@@ -4,6 +4,8 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData;
 using StardewValley.Minigames;
+using xTile.Dimensions;
+using SObject = StardewValley.Object;
 
 namespace StandaloneCraneGame {
     internal class ModEntry : Mod {
@@ -14,32 +16,25 @@ namespace StandaloneCraneGame {
             Config = helper.ReadConfig<ModConfig>();
 
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
-            helper.Events.Input.ButtonPressed += OnButtonPressed;
+            helper.Events.Input.ButtonsChanged += OnButtonsChanged;
         }
 
-        void OnButtonPressed(object? sender, ButtonPressedEventArgs e) {
+        private void OnButtonsChanged(object? sender, ButtonsChangedEventArgs e) {
             if (!Context.IsPlayerFree) return;
-            if (Game1.activeClickableMenu != null) return;
 
-            if (e.Button.IsActionButton()) {
-                Vector2 cursorTile = e.Cursor.GrabTile;
-                GameLocation location = Game1.player.currentLocation;
-                var obj = location.getObjectAtTile((int)cursorTile.X, (int)cursorTile.Y);
-
-                if (obj is null) {
-                    if (Config.DebugLogging) Monitor.Log($"Object is null", LogLevel.Debug);
-                    return;
-                }
-                if (obj.ItemId != "rokugin.cranecp_CraneGame") {
-                    if (Config.DebugLogging) Monitor.Log($"Object is not crane game", LogLevel.Debug);
-                    return;
-                }
-                if (Config.DebugLogging) Monitor.Log($"{obj.ItemId} found at tile ({(int)cursorTile.X}, {(int)cursorTile.Y})", LogLevel.Debug);
-                location.createQuestionDialogue(
+            if (e.Pressed.Any(button => button.IsActionButton())
+                && GetObjectAtCursor(e.Cursor) is SObject cursorObject
+                && cursorObject.QualifiedItemId == "(BC)rokugin.cranecp_CraneGame") {
+                Game1.currentLocation.createQuestionDialogue(
                     Config.Cost > 0 ? $"{Config.Cost} {Helper.Translation.Get("cost-not-free.text")}" : $"{Helper.Translation.Get("cost-free.text")}",
-                                                    location.createYesNoResponses(),
+                                                    Game1.currentLocation.createYesNoResponses(),
                                                     TryToStartCraneGame);
             }
+        }
+
+        SObject? GetObjectAtCursor(ICursorPosition cursor) {
+            var tile = cursor.GrabTile;
+            return Game1.currentLocation?.getObjectAtTile((int)tile.X, (int)tile.Y);
         }
 
         void TryToStartCraneGame(Farmer who, string whichAnswer) {
