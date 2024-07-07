@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace StrongerTools {
     internal class ModConfig {
 
-        public bool ShowLogs { get; set; } = false;
+        public bool DebugLogging { get; set; } = false;
 
     }
 }

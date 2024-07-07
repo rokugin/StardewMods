@@ -1,7 +1,6 @@
 ﻿using StardewModdingAPI;
 using StardewValley.Tools;
 using StardewValley;
-using GenericModConfigMenu;
 using StardewValley.TerrainFeatures;
 using Microsoft.Xna.Framework;
 using HarmonyLib;
@@ -13,17 +12,16 @@ using StardewValley.Delegates;
 namespace StrongerTools {
     public class ModEntry : Mod {
 
-        Item? item;
-        ModConfig config = new();
+        ModConfig Config = new();
         bool hardwareCursor = false;
 
         public override void Entry(IModHelper helper) {
-            config = helper.ReadConfig<ModConfig>();
+            Config = helper.ReadConfig<ModConfig>();
 
             helper.ConsoleCommands.Add("rokugin.set_health", "Sets player health to specified amount.\n\nUsage: rokugin.set_health <amount>\n- amount: integer amount", SetHealth);
 
             helper.Events.GameLoop.GameLaunched += OnGameLaunched;
-            helper.Events.Input.ButtonPressed += OnButtonPressed;
+            helper.Events.Input.ButtonsChanged += OnButtonsChanged;
             helper.Events.GameLoop.DayStarted += OnDayStarted;
             helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
             helper.Events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
@@ -69,7 +67,7 @@ namespace StrongerTools {
         void AddTerrainFeature(GameLocation location, Vector2 tilePosition, string treeType) {
             if (!location.IsTileOccupiedBy(tilePosition)) {
                 location.terrainFeatures.Add(tilePosition, new Tree(treeType, Tree.treeStage));
-                if (config.ShowLogs) Monitor.Log(
+                if (Config.DebugLogging) Monitor.Log(
                     $"Placing stage 5 {GetTreeNameByID(treeType)} tree at {location.Name} (X:{tilePosition.X}, Y:{tilePosition.Y})", LogLevel.Info);
             }
         }
@@ -100,13 +98,11 @@ namespace StrongerTools {
             TriggerActionManager.RegisterAction("rokugin.SetPlayerHealth", SetPlayerHealth);
         }
 
-        private void OnButtonPressed(object? sender, StardewModdingAPI.Events.ButtonPressedEventArgs e) {
+        private void OnButtonsChanged(object? sender, StardewModdingAPI.Events.ButtonsChangedEventArgs e) {
             if (!Context.IsPlayerFree) return;
-            if (Game1.activeClickableMenu != null) return;
 
-            item = Game1.player.CurrentTool;
-
-            if (e.Button.IsUseToolButton()) {
+            if (e.Pressed.Any(button => button.IsUseToolButton())
+                && Game1.player.CurrentTool is Item item) {
                 if (item is Pickaxe pickaxe) {
                     switch (pickaxe.ItemId) {
                         case "GoldPickaxe":
@@ -116,11 +112,12 @@ namespace StrongerTools {
                             if (pickaxe.additionalPower.Value < 10) pickaxe.additionalPower.Value = 10;
                             break;
                     }
-
-                    if (config.ShowLogs) Monitor.Log($"{pickaxe.Name} current additional power: +{pickaxe.additionalPower.Value}", LogLevel.Info);
+                    if (Config.DebugLogging) Monitor.Log($"{pickaxe.Name} current additional power: +{pickaxe.additionalPower.Value}", LogLevel.Info);
                 }
             }
         }
+
+        
 
         public static bool SetPlayerHealth(string[] args, TriggerActionContext context, out string error) {
             if (ArgUtility.TryGet(args, 1, out string amount, out error, allowBlank: false)) {
@@ -168,8 +165,8 @@ namespace StrongerTools {
 
             configMenu.Register(
                 mod: ModManifest,
-                reset: () => config = new ModConfig(),
-                save: () => Helper.WriteConfig(config)
+                reset: () => Config = new ModConfig(),
+                save: () => Helper.WriteConfig(Config)
             );
 
             configMenu.AddSectionTitle(
@@ -178,8 +175,8 @@ namespace StrongerTools {
             );
             configMenu.AddBoolOption(
                 mod: ModManifest,
-                getValue: () => config.ShowLogs,
-                setValue: value => config.ShowLogs = value,
+                getValue: () => Config.DebugLogging,
+                setValue: value => Config.DebugLogging = value,
                 name: () => "Enabled"
             );
         }
