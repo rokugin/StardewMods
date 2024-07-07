@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-	  <LangVersion>latest</LangVersion>
+	<LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<GamePath>D:\Program Files (x86)\Steam\steamapps\common\Stardew Valley</GamePath>
+	<GameModsPath>$(GamePath)/Mods/Standalone Crane Game</GameModsPath>
   </PropertyGroup>
 
   <ItemGroup>
