@@ -1,10 +1,10 @@
 {
     "Name": "Standalone Crane Game CP",
     "Author": "rokugin",
-    "Version": "1.0.0",
+    "Version": "1.1.0",
     "Description": "Adds crane game big craftable.",
     "UniqueID": "rokugin.cranecp",
-    "UpdateKeys": [],
+    "UpdateKeys": ["Nexus:-1"],
     "Dependencies": [
         {
             "UniqueID": "rokugin.crane",
