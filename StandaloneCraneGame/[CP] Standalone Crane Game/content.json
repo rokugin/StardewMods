@@ -1,0 +1,47 @@
+{
+    "$schema": "https://smapi.io/schemas/content-patcher.json",
+    "Format": "2.3.0",
+    "Changes": [
+        {
+            "LogName": "Load crane game sprite",
+            "Action": "Load",
+            "Target": "{{ModId}}/CraneGame",
+            "FromFile": "assets/CraneGame.png"
+        },
+        {
+            "LogName": "Create crane game big craftable",
+            "Action": "EditData",
+            "Target": "Data/BigCraftables",
+            "Entries": {
+                "{{ModId}}_CraneGame": {
+                    "Name": "{{ModId}}_CraneGame",
+                    "DisplayName": "{{i18n:crane-game.name}}",
+                    "Price": 2500,
+                    "IsLamp": true,
+                    "Texture": "{{ModId}}/CraneGame"
+                }
+            }
+        },
+        {
+            "LogName": "Add crane game to carpenter",
+            "Action": "EditData",
+            "Target": "Data/Shops",
+            "TargetField": [
+                "Carpenter",
+                "Items"
+            ],
+            "Entries": {
+                "{{ModId}}_CraneGame": {
+                    "Id": "{{ModId}}_CraneGame",
+                    "ItemId": "(BC){{ModId}}_CraneGame"
+                }
+            },
+            "MoveEntries": [
+                {
+                    "ID": "{{ModId}}_CraneGame",
+                    "BeforeID": "(BC)216"
+                }
+            ]
+        }
+    ]
+}

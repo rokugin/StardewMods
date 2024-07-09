@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="[CP] Standalone Crane Game\**" />
+    <EmbeddedResource Remove="[CP] Standalone Crane Game\**" />
+    <None Remove="[CP] Standalone Crane Game\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
   </ItemGroup>
 

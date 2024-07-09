@@ -56,6 +56,10 @@ namespace StandaloneCraneGame {
         }
 
         private void OnGameLaunched(object? sender, GameLaunchedEventArgs e) {
+            if (!Helper.ModRegistry.IsLoaded("rokugin.cranecp")) {
+                Monitor.Log("CP component not loaded, please check your installation.", LogLevel.Error);
+            }
+
             var configMenu = Helper.ModRegistry.GetApi<IGenericModConfigMenuApi>("spacechase0.GenericModConfigMenu");
             if (configMenu is null) return;
 
@@ -89,7 +93,6 @@ namespace StandaloneCraneGame {
                 name: () => Helper.Translation.Get("enabled.name"),
                 tooltip: () => Helper.Translation.Get("debug-enabled.tooltip")
             );
-
         }
 
     }
