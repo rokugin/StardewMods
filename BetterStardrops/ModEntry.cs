@@ -1,27 +1,10 @@
 ﻿using GenericModConfigMenu;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Delegates;
 using StardewValley.Menus;
-using StardewValley.Triggers;
 
 namespace BetterStardrops {
     internal class ModEntry : Mod {
-        //void SetUpInts() {
-        //    attackIncreaseAmount = config.AttackIncreaseAmount;
-        //    defenseIncreaseAmount = config.DefenseIncreaseAmount;
-        //    immunityIncreaseAmount = config.ImmunityIncreaseAmount;
-        //    healthIncreaseAmount = config.HealthIncreaseAmount;
-        //    staminaIncreaseAmount = config.StaminaIncreaseAmount;
-        //    combatLevelIncreaseAmount = config.CombatLevelIncreaseAmount;
-        //    farminglevelIncreaseAmount = config.FarmingLevelIncreaseAmount;
-        //    fishingLevelIncreaseAmount = config.FishingLevelIncreaseAmount;
-        //    foragingLevelIncreaseAmount = config.ForagingLevelIncreaseAmount;
-        //    luckLevelIncreaseAmount = config.LuckLevelIncreaseAmount;
-        //    miningLevelIncreaseAmount = config.MiningLevelIncreaseAmount;
-        //    magneticIncreaseAmount = config.MagneticIncreaseAmount;
-        //}
-
         int attackIncreaseAmount => config.AttackIncreaseAmount;
         int newAttackIncreaseAmount;
 
