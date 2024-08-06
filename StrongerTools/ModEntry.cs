@@ -1,22 +1,23 @@
 ﻿using StardewModdingAPI;
 using StardewValley.Tools;
 using StardewValley;
-using StardewValley.TerrainFeatures;
-using Microsoft.Xna.Framework;
 using HarmonyLib;
 using StardewValley.Objects;
-using SObject = StardewValley.Object;
 using StardewValley.Triggers;
 using StardewValley.Delegates;
+using System.Reflection.Emit;
 
 namespace StrongerTools {
     public class ModEntry : Mod {
 
         ModConfig Config = new();
+        static IMonitor? SMonitor;
+
         bool hardwareCursor = false;
 
         public override void Entry(IModHelper helper) {
             Config = helper.ReadConfig<ModConfig>();
+            SMonitor = Monitor;
 
             helper.ConsoleCommands.Add("rokugin.set_health", "Sets player health to specified amount.\n\nUsage: rokugin.set_health <amount>\n- amount: integer amount", SetHealth);
 
@@ -31,6 +32,11 @@ namespace StrongerTools {
             harmony.Patch(
                 original: AccessTools.Method(typeof(Trinket), nameof(Trinket.canBeShipped)),
                 postfix: new HarmonyMethod(typeof(ModEntry), nameof(Trinket_CanBeShipped_Postfix))
+            );
+
+            harmony.Patch(
+                original: AccessTools.Method(typeof(Game1), "drawHUD"),
+                transpiler: new HarmonyMethod(typeof(ModEntry), nameof(Game1_DrawHUD_Transpiler))
             );
         }
 
@@ -47,48 +53,43 @@ namespace StrongerTools {
             __result = true;
         }
 
+        static bool GetHealthBarVisibilitySetting() {
+            return true;
+        }
+
+        static IEnumerable<CodeInstruction> Game1_DrawHUD_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
+            var method = AccessTools.Method(typeof(ModEntry), nameof(GetHealthBarVisibilitySetting));
+
+            var matcher = new CodeMatcher(instructions, generator);
+
+            matcher.MatchStartForward(
+                new CodeMatch(OpCodes.Ldc_I4_1),
+                new CodeMatch(OpCodes.Stsfld),
+                new CodeMatch(OpCodes.Ldc_I4_1),
+                new CodeMatch(OpCodes.Stsfld),
+                new CodeMatch(OpCodes.Ldc_I4)
+            ).ThrowIfNotMatch("Match not found for show health label");
+
+            matcher.CreateLabel(out Label showHealthLabel);
+
+            matcher.MatchStartBackwards(
+                new CodeMatch(OpCodes.Call),
+                new CodeMatch(OpCodes.Ldfld),
+                new CodeMatch(OpCodes.Call),
+                new CodeMatch(OpCodes.Ldfld),
+                new CodeMatch(OpCodes.Bge)
+            ).ThrowIfNotMatch("Match not found for health visibility setting check insertion point.");
+
+            matcher.InsertAndAdvance(
+                new CodeInstruction(OpCodes.Call, method),
+                new CodeInstruction(OpCodes.Brtrue_S, showHealthLabel)
+            );
+
+            return matcher.InstructionEnumeration();
+        }
+
         private void OnDayStarted(object? sender, StardewModdingAPI.Events.DayStartedEventArgs e) {
-            //GameLocation location = Game1.getLocationFromName("Backwoods");
-
-            //AddTerrainFeature(location, new Vector2(34, 10), Tree.pineTree);
-            //AddTerrainFeature(location, new Vector2(41, 16), Tree.bushyTree);
-            //AddTerrainFeature(location, new Vector2(12, 19), Tree.bushyTree);
-            //AddTerrainFeature(location, new Vector2(15, 17), Tree.bushyTree);
-            //AddTerrainFeature(location, new Vector2(20, 20), Tree.bushyTree);
-            //AddTerrainFeature(location, new Vector2(25, 16), Tree.bushyTree);
-            //AddTerrainFeature(location, new Vector2(17, 14), Tree.leafyTree);
-            //AddTerrainFeature(location, new Vector2(19, 12), Tree.leafyTree);
-            //AddTerrainFeature(location, new Vector2(21, 11), Tree.leafyTree);
-            //AddTerrainFeature(location, new Vector2(28, 9), Tree.leafyTree);
-            //AddTerrainFeature(location, new Vector2(46, 12), Tree.leafyTree);
             Game1.netWorldState.Value.canDriveYourselfToday.Value = true;
-        }
-
-        void AddTerrainFeature(GameLocation location, Vector2 tilePosition, string treeType) {
-            if (!location.IsTileOccupiedBy(tilePosition)) {
-                location.terrainFeatures.Add(tilePosition, new Tree(treeType, Tree.treeStage));
-                if (Config.DebugLogging) Monitor.Log(
-                    $"Placing stage 5 {GetTreeNameByID(treeType)} tree at {location.Name} (X:{tilePosition.X}, Y:{tilePosition.Y})", LogLevel.Info);
-            }
-        }
-
-        string GetTreeNameByID(string id) {
-            string treeName;
-            switch (id) {
-                case "1":
-                    treeName = "Oak";
-                    break;
-                case "2":
-                    treeName = "Maple";
-                    break;
-                case "3":
-                    treeName = "Pine";
-                    break;
-                default:
-                    treeName = "";
-                    break;
-            }
-            return treeName;
         }
 
         private void OnGameLaunched(object? sender, StardewModdingAPI.Events.GameLaunchedEventArgs e) {
@@ -116,8 +117,6 @@ namespace StrongerTools {
                 }
             }
         }
-
-        
 
         public static bool SetPlayerHealth(string[] args, TriggerActionContext context, out string error) {
             if (ArgUtility.TryGet(args, 1, out string amount, out error, allowBlank: false)) {
