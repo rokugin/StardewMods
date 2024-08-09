@@ -5,5 +5,5 @@
   "Description": "Code that responds to interacting with custom map actions.",
   "UniqueID": "rokugin.extramapactions",
   "EntryDll": "ExtraMapActions.dll",
-  "UpdateKeys": []
+  "UpdateKeys": [ "Nexus:26849" ]
 }
