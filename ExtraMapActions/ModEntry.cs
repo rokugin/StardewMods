@@ -1,4 +1,5 @@
 ﻿using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.GameData;
 using StardewValley.Locations;
@@ -27,7 +28,7 @@ namespace ExtraMapActions {
                     tile = Game1.player.GetGrabTile();
                 }
 
-                switch (Game1.currentLocation.doesTileHaveProperty((int)tile.X, (int)tile.Y, "Action", "Buildings", true).ToLower()) {
+                switch (Game1.currentLocation.doesTileHavePropertyNoNull((int)tile.X, (int)tile.Y, "Action", "Buildings").ToLower()) {
                     case "ema_cranegame":
                         if (Config.DebugLogging) Monitor.Log("Crane game action found, attempting to open prompt.", LogLevel.Debug);
                         Game1.currentLocation.createQuestionDialogue(
