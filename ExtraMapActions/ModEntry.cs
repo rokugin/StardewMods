@@ -27,8 +27,8 @@ namespace ExtraMapActions {
                     tile = Game1.player.GetGrabTile();
                 }
 
-                switch (Game1.currentLocation.doesTileHaveProperty((int)tile.X, (int)tile.Y, "Action", "Buildings", true)) {
-                    case "EMA_CraneGame":
+                switch (Game1.currentLocation.doesTileHaveProperty((int)tile.X, (int)tile.Y, "Action", "Buildings", true).ToLower()) {
+                    case "ema_cranegame":
                         if (Config.DebugLogging) Monitor.Log("Crane game action found, attempting to open prompt.", LogLevel.Debug);
                         Game1.currentLocation.createQuestionDialogue(
                             Config.CraneGameCost > 0
@@ -37,7 +37,7 @@ namespace ExtraMapActions {
                         Game1.currentLocation.createYesNoResponses(),
                         TryToStartCraneGame);
                         break;
-                    case "EMA_LostAndFound":
+                    case "ema_lostandfound":
                         if (Config.DebugLogging) Monitor.Log("Lost and found action found, checking if lost and found can be opened.", LogLevel.Debug);
                         if (Game1.player.team.returnedDonations.Count > 0 && !Game1.player.team.returnedDonationsMutex.IsLocked()) {
                             if (Config.DebugLogging) Monitor.Log("Lost and found can be opened, attempting to open prompt.", LogLevel.Debug);
@@ -54,7 +54,7 @@ namespace ExtraMapActions {
                             Game1.drawObjectDialogue(prompt);
                         }
                         break;
-                    case "EMA_OfflineFarmhandInventory":
+                    case "ema_offlinefarmhandinventory":
                         if (Config.DebugLogging) 
                             Monitor.Log("Offline farmhand inventory action found, checking for offline farmhand inventories.", LogLevel.Debug);
                         List<Response> choices = new List<Response>();
