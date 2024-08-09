@@ -3,7 +3,7 @@
   "Author": "rokugin",
   "Version": "1.0.0",
   "Description": "Code that responds to interacting with custom map actions.",
-  "UniqueID": "rokugin.mapactions",
+  "UniqueID": "rokugin.extramapactions",
   "EntryDll": "ExtraMapActions.dll",
   "UpdateKeys": []
 }

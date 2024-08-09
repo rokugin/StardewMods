@@ -6,5 +6,6 @@
   "cost.name": "Crane Game Cost",
   "cost.tooltip": "Set the cost per play for standalone crane game. Default: 500",
   "start-play-cost.text": "gold to play. Start?",
-  "start-play-free.text": "No cost to play. Start?"
+  "start-play-free.text": "No cost to play. Start?",
+  "lost-and-found-question": "Open lost and found?"
 }

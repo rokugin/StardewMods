@@ -29,6 +29,7 @@ namespace ExtraMapActions {
 
                 switch (Game1.currentLocation.doesTileHaveProperty((int)tile.X, (int)tile.Y, "Action", "Buildings", true)) {
                     case "EMA_CraneGame":
+                        if (Config.DebugLogging) Monitor.Log("Crane game action found, attempting to open prompt.", LogLevel.Debug);
                         Game1.currentLocation.createQuestionDialogue(
                             Config.CraneGameCost > 0
                             ? $"{Config.CraneGameCost} {Helper.Translation.Get("start-play-cost.text")}"
@@ -37,12 +38,15 @@ namespace ExtraMapActions {
                         TryToStartCraneGame);
                         break;
                     case "EMA_LostAndFound":
+                        if (Config.DebugLogging) Monitor.Log("Lost and found action found, checking if lost and found can be opened.", LogLevel.Debug);
                         if (Game1.player.team.returnedDonations.Count > 0 && !Game1.player.team.returnedDonationsMutex.IsLocked()) {
+                            if (Config.DebugLogging) Monitor.Log("Lost and found can be opened, attempting to open prompt.", LogLevel.Debug);
                             Game1.currentLocation.createQuestionDialogue(
-                                "Open lost and found?",
+                                Helper.Translation.Get("lost-and-found-question"),
                                 Game1.currentLocation.createYesNoResponses(),
                                 OpenLostAndFound);
                         } else {
+                            if (Config.DebugLogging) Monitor.Log("Lost and found cannot be opened, attempting to open info dialogue.", LogLevel.Debug);
                             string prompt = 
                                 SpecialOrder.IsSpecialOrdersBoardUnlocked() 
                                 ? Game1.content.LoadString("Strings\\Locations:ManorHouse_LAF_Check_OrdersUnlocked") 
@@ -51,6 +55,8 @@ namespace ExtraMapActions {
                         }
                         break;
                     case "EMA_OfflineFarmhandInventory":
+                        if (Config.DebugLogging) 
+                            Monitor.Log("Offline farmhand inventory action found, checking for offline farmhand inventories.", LogLevel.Debug);
                         List<Response> choices = new List<Response>();
 
                         foreach (Farmer retrievableFarmer in GetRetrievableFarmers()) {
@@ -63,9 +69,9 @@ namespace ExtraMapActions {
 
                             choices.Add(new Response(key, name));
                         }
-
+                        if (Config.DebugLogging) Monitor.Log($"{choices.Count} farmhand inventories found.", LogLevel.Debug);
                         choices.Add(new Response("Cancel", Game1.content.LoadString("Strings\\Locations:ManorHouse_LedgerBook_TransferCancel")));
-
+                        if (Config.DebugLogging) Monitor.Log("Attempting to open prompt.", LogLevel.Debug);
                         Game1.currentLocation.createQuestionDialogue(
                             Game1.content.LoadString("Strings\\Locations:ManorHouse_LAF_FarmhandItemsQuestion"), 
                             choices.ToArray(), 
